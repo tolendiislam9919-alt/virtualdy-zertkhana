@@ -1,0 +1,2491 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Физика — Виртуалды Зертхана</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sky: #1a1f3a;
+  --sky2: #232848;
+  --sky3: #2d3558;
+  --panel: #ffffff;
+  --panel2: #f5f7ff;
+  --panel3: #eef1ff;
+  --border: rgba(100,120,255,0.18);
+  --border2: rgba(100,120,255,0.08);
+  --blue: #4f7fff;
+  --blue2: #6c8fff;
+  --green: #34d399;
+  --green2: #10b981;
+  --amber: #fbbf24;
+  --red: #f87171;
+  --purple: #a78bfa;
+  --text: #1e2240;
+  --text2: #64748b;
+  --text3: #94a3b8;
+  --glow-blue: 0 0 20px rgba(79,127,255,0.3);
+  --glow-green: 0 0 20px rgba(52,211,153,0.3);
+  --shadow: 0 4px 24px rgba(30,34,64,0.10);
+  --shadow-lg: 0 8px 40px rgba(30,34,64,0.15);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: #f0f4ff;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0; z-index: 1000;
+  background: var(--sky);
+  padding: 0 28px;
+  height: 60px;
+  display: flex; align-items: center; gap: 0;
+  box-shadow: 0 2px 20px rgba(0,0,20,0.25);
+}
+
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-right: 36px;
+  cursor: pointer;
+}
+.nav-logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: var(--glow-blue);
+}
+.nav-logo-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.nav-logo-sub { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 400; }
+
+.nav-links { display: flex; gap: 4px; }
+
+.nav-link {
+  padding: 7px 18px;
+  border-radius: 8px;
+  border: none;
+  color: rgba(255,255,255,0.55);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; background: none;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s;
+}
+.nav-link:hover { color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.08); }
+.nav-link.active {
+  color: #fff;
+  background: rgba(79,127,255,0.25);
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 4px 10px; border-radius: 6px;
+}
+
+.page { display: none; min-height: calc(100vh - 60px); }
+.page.active { display: block; }
+
+/* ══════════════════════════════════
+   PAGE 1 — HOME
+══════════════════════════════════ */
+.home-wrap {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 60px 24px 80px;
+}
+
+.home-hero {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.hero-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(79,127,255,0.1);
+  border: 1px solid rgba(79,127,255,0.25);
+  color: var(--blue);
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 100px;
+  margin-bottom: 28px;
+  animation: fadeDown 0.6s ease both;
+}
+.hero-chip-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 0 8px rgba(79,127,255,0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+.hero-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(2.4rem,5.5vw,4rem);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--text);
+  margin-bottom: 18px;
+  animation: fadeDown 0.7s 0.1s ease both;
+}
+.hero-title span {
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.hero-sub {
+  font-size: 15px; color: var(--text2);
+  line-height: 1.7; max-width: 520px; margin: 0 auto 40px;
+  animation: fadeDown 0.7s 0.2s ease both;
+}
+
+.stats-strip {
+  display: flex; justify-content: center; gap: 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  max-width: 760px; margin: 0 auto 64px;
+  animation: fadeDown 0.7s 0.3s ease both;
+}
+.stat-it {
+  flex: 1; text-align: center; padding: 24px 16px;
+  border-right: 1px solid var(--border);
+}
+.stat-it:last-child { border-right: none; }
+.stat-n {
+  font-family: 'Nunito', sans-serif;
+  font-size: 32px; font-weight: 900;
+  color: var(--blue);
+}
+.stat-l { font-size: 11px; color: var(--text3); margin-top: 2px; font-weight: 600; letter-spacing: 0.5px; }
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  animation: fadeUp 0.7s 0.4s ease both;
+}
+
+.home-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative; overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.home-card::before {
+  content:'';
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.3s;
+}
+.home-card.card-blue::before { background: radial-gradient(circle at top left, rgba(79,127,255,0.06), transparent 60%); }
+.home-card.card-green::before { background: radial-gradient(circle at top left, rgba(52,211,153,0.06), transparent 60%); }
+.home-card.card-amber::before { background: radial-gradient(circle at top left, rgba(251,191,36,0.06), transparent 60%); }
+.home-card.card-pink::before { background: radial-gradient(circle at top left, rgba(236,72,153,0.06), transparent 60%); }
+.home-card.card-teal::before { background: radial-gradient(circle at top left, rgba(20,184,166,0.06), transparent 60%); }
+.home-card:hover::before { opacity: 1; }
+.home-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(79,127,255,0.35);
+}
+
+.card-icon-wrap {
+  width: 64px; height: 64px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+.card-icon-wrap.blue { background: rgba(79,127,255,0.1); }
+.card-icon-wrap.green { background: rgba(52,211,153,0.1); }
+.card-icon-wrap.amber { background: rgba(251,191,36,0.1); }
+.card-icon-wrap.pink { background: rgba(236,72,153,0.1); }
+.card-icon-wrap.teal { background: rgba(20,184,166,0.1); }
+
+.card-tag {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.card-tag.blue { color: var(--blue); }
+.card-tag.green { color: var(--green2); }
+.card-tag.amber { color: #d97706; }
+.card-tag.pink { color: #ec4899; }
+.card-tag.teal { color: #0d9488; }
+
+.home-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+.home-card p { font-size: 13.5px; color: var(--text2); line-height: 1.75; margin-bottom: 24px; }
+
+.card-go-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 18px; border-radius: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+  border: 1px solid; transition: all 0.18s;
+}
+.card-go-btn.blue { color: var(--blue); border-color: rgba(79,127,255,0.3); background: rgba(79,127,255,0.07); }
+.card-go-btn.green { color: var(--green2); border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.07); }
+.card-go-btn.amber { color: #d97706; border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.07); }
+.card-go-btn.pink { color: #ec4899; border-color: rgba(236,72,153,0.3); background: rgba(236,72,153,0.07); }
+.card-go-btn.teal { color: #0d9488; border-color: rgba(20,184,166,0.3); background: rgba(20,184,166,0.07); }
+.home-card:hover .card-go-btn.blue { background: rgba(79,127,255,0.15); }
+.home-card:hover .card-go-btn.green { background: rgba(52,211,153,0.15); }
+.home-card:hover .card-go-btn.amber { background: rgba(251,191,36,0.15); }
+.home-card:hover .card-go-btn.pink { background: rgba(236,72,153,0.15); }
+.home-card:hover .card-go-btn.teal { background: rgba(20,184,166,0.15); }
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* ══════════════════════════════════
+   PAGE 2 — LABS
+══════════════════════════════════ */
+.lab-tabs-bar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex; gap: 0;
+  box-shadow: 0 2px 8px rgba(30,34,64,0.05);
+  overflow-x: auto;
+}
+.lab-tab {
+  padding: 16px 24px;
+  font-size: 13px; font-weight: 700;
+  color: var(--text2); cursor: pointer;
+  border: none; background: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s; letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+.lab-tab:hover { color: var(--text); }
+.lab-tab.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+.lab-content { display: none; }
+.lab-content.active { display: block; }
+
+/* ── ELECTRIC LAB ── */
+.electric-wrap {
+  display: flex; flex-direction: column;
+  height: calc(100vh - 165px);
+}
+
+.elec-topbar {
+  background: var(--sky);
+  padding: 10px 20px;
+  display: flex; align-items: center; gap: 14px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.elec-topbar-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px; font-weight: 900;
+  color: #fff; letter-spacing: 1px;
+}
+.elec-topbar-hint {
+  font-size: 12px; color: rgba(255,255,255,0.35);
+}
+.elec-topbar-btns { margin-left: auto; display: flex; gap: 8px; }
+
+.tbtn {
+  padding: 6px 14px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.7);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s;
+}
+.tbtn:hover { background: rgba(255,255,255,0.15); color: #fff; border-color: rgba(255,255,255,0.3); }
+.tbtn.danger:hover { background: rgba(248,113,113,0.2); color: var(--red); border-color: var(--red); }
+
+.elec-body { display: flex; flex: 1; overflow: hidden; }
+
+/* SIDEBAR */
+.elec-sidebar {
+  width: 190px; flex-shrink: 0;
+  background: var(--sky2);
+  border-right: 1px solid rgba(255,255,255,0.06);
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+.sidebar-sect { padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.sidebar-label {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.comp-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  cursor: grab; margin-bottom: 6px;
+  transition: all 0.18s;
+}
+.comp-item:hover {
+  background: rgba(79,127,255,0.15);
+  border-color: rgba(79,127,255,0.4);
+  transform: translateX(3px);
+}
+.comp-item:active { cursor: grabbing; }
+.comp-item-name { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85); }
+.comp-item-sub { font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 1px; }
+.comp-item-ico { flex-shrink: 0; }
+
+.instr { font-size: 11px; color: rgba(255,255,255,0.35); line-height: 2; }
+.instr b { color: rgba(79,127,255,0.9); }
+
+/* WORKSPACE */
+.elec-workspace {
+  flex: 1; position: relative; overflow: hidden;
+  background: #e8eeff;
+  background-image:
+    linear-gradient(rgba(79,127,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,127,255,0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+#ws-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.comp-el { position: absolute; cursor: grab; z-index: 20; transform: translate(-50%,-50%); touch-action: none; user-select: none; -webkit-user-select: none; }
+.comp-el:active { cursor: grabbing; z-index: 30; }
+.term-dot {
+  position: absolute; width: 22px; height: 22px; border-radius: 50%;
+  background: #94a3b8; border: 3px solid white; cursor: crosshair;
+  z-index: 40; transition: all 0.15s; transform: translate(-50%,-50%);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+  touch-action: none; -webkit-tap-highlight-color: transparent;
+}
+.term-dot:hover, .term-dot:active {
+  background: var(--blue); border-color: white;
+  box-shadow: 0 0 0 6px rgba(79,127,255,0.3), 0 1px 4px rgba(0,0,0,0.15);
+  transform: translate(-50%,-50%) scale(1.25);
+}
+.comp-del {
+  position: absolute; top: -14px; right: -14px;
+  width: 28px; height: 28px; background: var(--red);
+  border-radius: 50%; cursor: pointer; display: none;
+  align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: white;
+  z-index: 50; box-shadow: 0 2px 8px rgba(248,113,113,0.4);
+  border: 2.5px solid white; touch-action: manipulation;
+}
+.comp-el:hover .comp-del { display: flex; }
+.wire-line { stroke: #93a8d4; stroke-width: 2.5; fill: none; stroke-linecap: round; cursor: pointer; }
+.wire-line.live { stroke: var(--blue); stroke-width: 3; filter: drop-shadow(0 0 6px rgba(79,127,255,0.5)); }
+.wire-line:hover { stroke: var(--red); stroke-width: 4; }
+.wire-preview { stroke: var(--blue); stroke-width: 2; fill: none; stroke-dasharray: 7 4; stroke-linecap: round; pointer-events: none; opacity: 0.6; }
+@keyframes electron-move { from{stroke-dashoffset:60} to{stroke-dashoffset:0} }
+.wire-line.live.animated { stroke-dasharray: 10 6; animation: electron-move 0.5s linear infinite; }
+
+/* RIGHT PANEL */
+.elec-right {
+  width: 210px; flex-shrink: 0;
+  background: var(--sky2);
+  border-left: 1px solid rgba(255,255,255,0.06);
+  display: flex; flex-direction: column;
+}
+
+.meter-block { padding: 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.meter-block-title {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 14px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.meter-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.meter-lbl { font-size: 11px; color: rgba(255,255,255,0.4); }
+.meter-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px; font-weight: 700;
+}
+.meter-val .unit { font-size: 10px; color: rgba(255,255,255,0.3); margin-left: 2px; }
+.mv-blue { color: #7eb2ff; }
+.mv-green { color: var(--green); }
+.mv-amber { color: var(--amber); }
+.mv-pink { color: #f9a8d4; }
+
+.circuit-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-radius: 8px; margin-top: 8px;
+  border: 1px solid; font-size: 12px; font-weight: 700;
+}
+.circuit-status.open { border-color: rgba(248,113,113,0.4); color: var(--red); background: rgba(248,113,113,0.1); }
+.circuit-status.closed { border-color: rgba(52,211,153,0.4); color: var(--green); background: rgba(52,211,153,0.1); }
+.cs-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; animation: blink 1.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+.law-block { padding: 14px; flex: 1; overflow-y: auto; }
+.law-block-title {
+  font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.law-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+  font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.8;
+}
+.law-item b { color: rgba(79,127,255,0.9); }
+
+.e-tooltip {
+  position: fixed; background: var(--sky);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 6px 12px;
+  font-size: 11px; color: rgba(255,255,255,0.7);
+  pointer-events: none; z-index: 999; display: none;
+  box-shadow: 0 4px 20px rgba(0,0,20,0.3);
+}
+
+/* ── BOAT LAB ── */
+.boat-wrap { max-width: 900px; margin: 0 auto; padding: 36px 24px 80px; }
+
+.boat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px; margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.boat-card-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--blue);
+  margin-bottom: 24px;
+}
+.boat-card-title::before {
+  content: '';
+  display: inline-block; width: 8px; height: 8px;
+  background: var(--blue); border-radius: 50%;
+  box-shadow: 0 0 10px rgba(79,127,255,0.5);
+}
+
+.slider-group { margin-bottom: 20px; }
+.slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.slider-name { font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+.slider-val { font-size: 26px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.slider-val.blue { color: var(--blue); }
+.slider-val.red { color: var(--red); }
+.slider-val span { font-size: 12px; color: var(--text2); font-weight: 400; }
+
+input[type=range] {
+  -webkit-appearance: none; width: 100%; height: 5px;
+  background: linear-gradient(to right, var(--blue), rgba(79,127,255,0.2));
+  border-radius: 3px; outline: none; cursor: pointer;
+}
+input[type=range].red-range { background: linear-gradient(to right, var(--red), rgba(248,113,113,0.2)); }
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px;
+  border-radius: 50%; background: white;
+  box-shadow: 0 0 0 3px var(--blue), 0 2px 8px rgba(79,127,255,0.3);
+  cursor: pointer; transition: transform 0.15s;
+}
+input[type=range].red-range::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--red), 0 2px 8px rgba(248,113,113,0.3); }
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+.b-metrics { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-top: 20px; }
+.b-metric {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px; text-align: center;
+}
+.b-metric-label { font-size: 10px; font-family: 'JetBrains Mono', monospace; letter-spacing: 1px; text-transform: uppercase; color: var(--text3); margin-bottom: 8px; }
+.b-metric-val { font-size: 26px; font-weight: 800; font-family: 'JetBrains Mono', monospace; }
+.b-metric-val.blue { color: var(--blue); }
+.b-metric-val.red { color: var(--red); }
+.b-metric-val.amber { color: #d97706; }
+.b-metric-unit { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* RIVER */
+.river-container {
+  position: relative; height: 130px; border-radius: 16px;
+  overflow: hidden; margin: 16px 0;
+  background: linear-gradient(to bottom, #1e6fa5, #1558a0);
+  border: 1px solid rgba(79,127,255,0.2);
+  box-shadow: inset 0 -2px 20px rgba(0,0,40,0.2);
+}
+.bank { position: absolute; left: 0; right: 0; height: 22px; }
+.bank.top { top: 0; background: linear-gradient(to bottom, #2d7a1f, #3a9624); }
+.bank.bottom { bottom: 0; background: linear-gradient(to top, #2d7a1f, #3a9624); }
+.wave-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.wave { position: absolute; top: 50%; transform: translateY(-50%); font-size: 14px; color: rgba(150,210,255,0.35); animation: waveFlow 3.5s linear infinite; white-space: nowrap; }
+.wave:nth-child(2){animation-delay:-1.2s;top:40%}
+.wave:nth-child(3){animation-delay:-2.4s;top:62%}
+@keyframes waveFlow { from{transform:translateY(-50%) translateX(0);left:-5%} to{transform:translateY(-50%) translateX(0);left:110%} }
+.station {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 14px; font-family: 'JetBrains Mono', monospace;
+  border: 2px solid; z-index: 2;
+  box-shadow: 0 0 20px;
+}
+.station-a { left: 12px; background: rgba(52,211,153,0.2); color: var(--green); border-color: var(--green); box-shadow: 0 0 20px rgba(52,211,153,0.3); }
+.station-b { right: 12px; background: rgba(248,113,113,0.2); color: var(--red); border-color: var(--red); box-shadow: 0 0 20px rgba(248,113,113,0.3); }
+.boat-el { position: absolute; top: 50%; transform: translateY(-50%); font-size: 28px; z-index: 3; filter: drop-shadow(0 3px 8px rgba(0,0,0,0.4)); transition: left 0.08s linear; }
+
+.b-btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.b-btn {
+  padding: 8px 16px; border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel2); color: var(--text2);
+  font-size: 12px; font-family: 'JetBrains Mono', monospace;
+  cursor: pointer; transition: all 0.18s; font-weight: 700;
+}
+.b-btn:hover { background: var(--panel3); color: var(--text); }
+.b-btn.ag { background: rgba(79,127,255,0.08); color: var(--blue); border-color: rgba(79,127,255,0.3); }
+.b-btn.ar { background: rgba(248,113,113,0.08); color: var(--red); border-color: rgba(248,113,113,0.3); }
+.b-btn.ay { background: rgba(251,191,36,0.08); color: #d97706; border-color: rgba(251,191,36,0.3); }
+.b-btn-play { margin-left: auto; background: linear-gradient(135deg, rgba(79,127,255,0.15), rgba(124,58,237,0.1)); color: var(--blue); border-color: rgba(79,127,255,0.4); }
+.b-btn-play:hover { background: linear-gradient(135deg, rgba(79,127,255,0.25), rgba(124,58,237,0.2)); }
+
+.progress-wrap { margin-top: 10px; }
+.progress-info { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.progress-info span { font-size: 11px; font-family: 'JetBrains Mono', monospace; color: var(--text2); }
+.progress-track { height: 6px; background: var(--panel2); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
+.progress-fill { height: 100%; border-radius: 3px; transition: width 0.1s; background: linear-gradient(90deg, var(--blue), var(--purple)); }
+.progress-fill.red { background: linear-gradient(90deg, var(--red), #f9a8d4); }
+.progress-fill.yellow { background: linear-gradient(90deg, var(--amber), #fde68a); }
+
+/* FORMULA STEPS */
+.formula-steps { display: flex; flex-direction: column; gap: 12px; }
+.step-row {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 16px;
+  background: var(--panel2); border-radius: 14px;
+  border: 1px solid var(--border); transition: border-color 0.2s;
+}
+.step-row:hover { border-color: rgba(79,127,255,0.3); }
+.step-num {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: linear-gradient(135deg, rgba(79,127,255,0.15), rgba(124,58,237,0.1));
+  border: 1px solid rgba(79,127,255,0.3);
+  color: var(--blue); font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-family: 'JetBrains Mono', monospace;
+}
+.step-content { font-size: 13px; color: var(--text); line-height: 1.8; font-family: 'JetBrains Mono', monospace; }
+.step-content .dim { color: var(--text2); }
+.step-content .hi { color: var(--blue); font-weight: 700; }
+.step-content .hi2 { color: var(--red); font-weight: 700; }
+
+.answer-box {
+  margin-top: 20px; padding: 24px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(79,127,255,0.06), rgba(124,58,237,0.04));
+  border: 1px solid rgba(79,127,255,0.25);
+  text-align: center;
+}
+.answer-label { font-size: 10px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); margin-bottom: 8px; }
+.answer-val { font-size: 40px; font-weight: 900; color: var(--blue); font-family: 'JetBrains Mono', monospace; }
+.answer-formula { font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; margin-top: 6px; }
+
+/* ══════════════════════════════════
+   PAGE 3 — TASKS & TEST
+══════════════════════════════════ */
+.tasks-wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+.page-title { margin-bottom: 40px; }
+.page-title h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1.6rem,3.5vw,2.4rem); font-weight: 900;
+  color: var(--text); margin-bottom: 6px;
+}
+.page-title p { font-size: 13px; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+
+.task-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px; padding: 26px; margin-bottom: 16px;
+  box-shadow: var(--shadow); transition: border-color 0.2s;
+}
+.task-card:hover { border-color: rgba(79,127,255,0.35); }
+.task-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.task-badge {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: linear-gradient(135deg, rgba(79,127,255,0.12), rgba(124,58,237,0.08));
+  border: 1px solid rgba(79,127,255,0.25);
+  color: var(--blue); font-size: 14px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; flex-shrink: 0;
+}
+.task-card h4 { font-size: 17px; font-weight: 700; color: var(--text); }
+.task-text { font-size: 14px; color: var(--text2); line-height: 1.85; margin-bottom: 16px; }
+.task-given {
+  background: var(--panel2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 16px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  color: var(--text2); line-height: 2;
+}
+.task-given .g-val { color: #d97706; font-weight: 700; }
+.task-toggle {
+  padding: 8px 18px; border-radius: 10px;
+  border: 1px solid rgba(79,127,255,0.3);
+  background: rgba(79,127,255,0.07); color: var(--blue);
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  transition: all 0.18s; font-family: 'Space Grotesk', sans-serif;
+  letter-spacing: 0.5px;
+}
+.task-toggle:hover { background: rgba(79,127,255,0.15); }
+.task-answer {
+  display: none; margin-top: 14px; padding: 16px 18px;
+  background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.2);
+  border-radius: 12px; font-size: 13px; line-height: 2;
+  color: var(--text); font-family: 'JetBrains Mono', monospace;
+}
+.task-answer .a-key { color: var(--green2); font-weight: 700; }
+.task-answer.show { display: block; }
+
+/* TEST */
+.test-sect { margin-top: 60px; }
+.test-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+.test-hdr h3 {
+  font-family: 'Nunito', sans-serif; font-size: 22px; font-weight: 900; color: var(--text);
+}
+.test-score-bdg {
+  font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;
+  padding: 7px 18px; border-radius: 10px;
+  border: 1px solid var(--border); color: var(--text2); background: var(--panel);
+  box-shadow: var(--shadow);
+}
+.test-score-bdg.good { border-color: rgba(52,211,153,0.4); color: var(--green2); background: rgba(52,211,153,0.08); }
+
+.q-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 18px; padding: 24px; margin-bottom: 14px;
+  box-shadow: var(--shadow); transition: border-color 0.2s;
+}
+.q-card.correct { border-color: rgba(52,211,153,0.45); background: rgba(52,211,153,0.02); }
+.q-card.wrong { border-color: rgba(248,113,113,0.45); background: rgba(248,113,113,0.02); }
+.q-num { font-size: 10px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; color: var(--text3); margin-bottom: 10px; text-transform: uppercase; }
+.q-text { font-size: 15px; font-weight: 600; margin-bottom: 18px; line-height: 1.6; color: var(--text); }
+.q-options { display: flex; flex-direction: column; gap: 8px; }
+.q-opt {
+  padding: 11px 18px; border-radius: 12px; border: 1px solid var(--border);
+  background: var(--panel2); cursor: pointer; font-size: 13px; font-weight: 600;
+  transition: all 0.18s; text-align: left; color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+}
+.q-opt:hover:not(:disabled) { border-color: rgba(79,127,255,0.4); color: var(--blue); background: rgba(79,127,255,0.06); }
+.q-opt.selected { border-color: var(--blue); color: var(--blue); background: rgba(79,127,255,0.09); }
+.q-opt.correct-ans { border-color: var(--green2); color: var(--green2); background: rgba(52,211,153,0.08); }
+.q-opt.wrong-ans { border-color: var(--red); color: var(--red); background: rgba(248,113,113,0.08); }
+.q-opt:disabled { cursor: default; }
+.q-exp {
+  display: none; margin-top: 14px; padding: 14px 16px;
+  background: var(--panel2); border: 1px solid var(--border);
+  border-radius: 12px; font-size: 12px; color: var(--text2);
+  line-height: 1.85; font-family: 'JetBrains Mono', monospace;
+}
+.q-exp.show { display: block; }
+.q-exp .e-ok { color: var(--green2); font-weight: 700; }
+
+.test-ctrl { display: flex; gap: 12px; margin-top: 28px; justify-content: center; }
+.test-btn {
+  padding: 13px 36px; border-radius: 12px;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.3px;
+}
+.test-btn.primary {
+  background: linear-gradient(135deg, rgba(79,127,255,0.12), rgba(124,58,237,0.08));
+  color: var(--blue); border: 1px solid rgba(79,127,255,0.35);
+}
+.test-btn.primary:hover { background: linear-gradient(135deg, rgba(79,127,255,0.22), rgba(124,58,237,0.15)); }
+.test-btn.secondary { background: var(--panel); color: var(--text2); border: 1px solid var(--border); box-shadow: var(--shadow); }
+.test-btn.secondary:hover { color: var(--text); border-color: rgba(100,116,139,0.4); }
+
+.result-box {
+  display: none; margin-top: 28px; padding: 40px;
+  background: var(--panel); border-radius: 24px;
+  border: 1px solid var(--border); text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+.result-box.show { display: block; animation: fadeUp 0.5s ease; }
+.result-score { font-family: 'Nunito', sans-serif; font-size: 64px; font-weight: 900; margin: 10px 0; }
+.result-score.excellent { color: var(--green2); }
+.result-score.good-r { color: #d97706; }
+.result-score.poor { color: var(--red); }
+.result-lbl { font-size: 14px; color: var(--text2); font-family: 'JetBrains Mono', monospace; }
+.result-msg { font-size: 15px; color: var(--text); margin-top: 10px; font-weight: 600; }
+
+/* ══════════════════════════════════
+   AI СЕРГІТУ СӘТІ LAB
+══════════════════════════════════ */
+.sergitu-wrap {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+.sergitu-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.sergitu-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #ec4899, #a78bfa, #4f7fff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sergitu-sub {
+  font-size: 14px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sergitu-camera-card {
+  background: var(--sky);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 40px rgba(0,0,20,0.3);
+}
+.sergitu-video-wrap {
+  position: relative;
+  aspect-ratio: 16/9;
+  background: #000;
+  overflow: hidden;
+}
+#sergitu-webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#sergitu-canvas-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.sergitu-scanner-line {
+  position: absolute;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to bottom, transparent, #ec4899, transparent);
+  animation: sergituScan 2s linear infinite;
+  display: none;
+  pointer-events: none;
+}
+@keyframes sergituScan {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+.sergitu-status-bar {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(10px);
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  color: rgba(255,255,255,0.85);
+  white-space: nowrap;
+  transition: all 0.3s;
+  max-width: 90%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.sergitu-winner-tag {
+  position: absolute;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1a1a00;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-weight: 900;
+  font-size: 15px;
+  font-family: 'Nunito', sans-serif;
+  box-shadow: 0 4px 20px rgba(251,191,36,0.5);
+  transform: translateX(-50%);
+  display: none;
+  z-index: 10;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sergitu-controls {
+  padding: 18px 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  flex-wrap: wrap;
+}
+
+.sergitu-btn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid;
+}
+.sergitu-btn.start {
+  background: linear-gradient(135deg, rgba(236,72,153,0.2), rgba(167,139,250,0.15));
+  color: #f0abfc;
+  border-color: rgba(236,72,153,0.4);
+  flex: 1;
+}
+.sergitu-btn.start:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(236,72,153,0.35), rgba(167,139,250,0.25));
+  border-color: rgba(236,72,153,0.7);
+}
+.sergitu-btn.start:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.sergitu-btn.reset {
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.55);
+  border-color: rgba(255,255,255,0.1);
+}
+.sergitu-btn.reset:hover {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.8);
+}
+
+.sergitu-api-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.sergitu-api-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #ec4899;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sergitu-api-title::before {
+  content: '';
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: #ec4899;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(236,72,153,0.5);
+}
+.sergitu-api-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.sergitu-api-input {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.sergitu-api-input:focus {
+  border-color: rgba(236,72,153,0.5);
+  background: var(--panel);
+}
+.sergitu-api-input::placeholder {
+  color: var(--text3);
+}
+.sergitu-api-save {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(236,72,153,0.35);
+  background: rgba(236,72,153,0.08);
+  color: #ec4899;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s;
+}
+.sergitu-api-save:hover {
+  background: rgba(236,72,153,0.18);
+  border-color: rgba(236,72,153,0.6);
+}
+.sergitu-api-hint {
+  font-size: 11px;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 8px;
+  line-height: 1.8;
+}
+.sergitu-api-hint a {
+  color: #ec4899;
+  text-decoration: none;
+}
+
+.sergitu-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+.sergitu-info-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.sergitu-info-icon { font-size: 28px; margin-bottom: 12px; }
+.sergitu-info-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.sergitu-info-text {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.8;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ══════════════════════════════════
+   ЖАҢ LAB 4 — ҚОЛ ҚИМЫЛЫ ОЙЫНЫ
+══════════════════════════════════ */
+.handgame-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 36px 24px 80px;
+}
+.handgame-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.handgame-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 900;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, #14b8a6, #4f7fff, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.handgame-sub {
+  font-size: 14px;
+  color: var(--text2);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.handgame-main-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 20px;
+}
+
+/* Cats (category boxes) */
+.hg-cats-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  padding: 20px 20px 0;
+}
+.hg-cat-box {
+  background: var(--panel2);
+  border: 2px dashed rgba(100,116,139,0.35);
+  border-radius: 14px;
+  min-height: 90px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.hg-cat-box h3 {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text2);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+.hg-cat-box.highlight {
+  border-color: var(--blue);
+  background: rgba(79,127,255,0.07);
+  transform: scale(1.04);
+  box-shadow: 0 0 0 3px rgba(79,127,255,0.2);
+}
+.hg-cat-box.success {
+  border-color: var(--green2);
+  border-style: solid;
+  background: rgba(52,211,153,0.07);
+}
+.hg-cat-box.shake { animation: hgShake 0.3s; }
+@keyframes hgShake {
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-6px)}
+  75%{transform:translateX(6px)}
+}
+
+/* Camera area */
+.hg-camera-area {
+  position: relative;
+  margin: 16px 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0f172a;
+  aspect-ratio: 16/6;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+#hg-cam { display: none; }
+#hg-canvas-main {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scaleX(-1);
+}
+#hg-canvas-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scaleX(-1);
+}
+
+/* Floating cursor */
+#hg-cursor {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 2.5px solid var(--blue);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9000;
+  transform: translate(-50%,-50%);
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  display: none;
+}
+#hg-cursor.pinch {
+  border-color: var(--green2);
+  background: rgba(52,211,153,0.2);
+  transform: translate(-50%,-50%) scale(1.4);
+}
+.hg-finger-dot {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--blue);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 8999;
+  transform: translate(-50%,-50%);
+  transition: 0.12s;
+  display: none;
+}
+.hg-finger-dot.pinch { background: var(--green2); box-shadow: 0 0 12px rgba(52,211,153,0.7); }
+
+/* Pool (card area) */
+.hg-pool {
+  position: relative;
+  min-height: 130px;
+  background: var(--panel2);
+  border-top: 1px solid var(--border);
+  padding: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.hg-pool-label {
+  position: absolute;
+  top: 8px; left: 14px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Formula cards */
+.hg-card {
+  padding: 10px 18px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text);
+  user-select: none;
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+  position: relative;
+  box-shadow: var(--shadow);
+  z-index: 50;
+  touch-action: none;
+}
+.hg-card.hover-ready {
+  transform: scale(1.1);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(79,127,255,0.25), var(--shadow);
+  background: rgba(79,127,255,0.04);
+}
+.hg-card.grabbed {
+  position: fixed;
+  z-index: 9500;
+  transform: scale(1.18);
+  background: rgba(79,127,255,0.08);
+  border-color: var(--blue);
+  box-shadow: 0 12px 30px rgba(79,127,255,0.35);
+  cursor: grabbing;
+}
+.hg-card.snapped {
+  background: linear-gradient(135deg, rgba(52,211,153,0.15), rgba(16,185,129,0.1));
+  border-color: var(--green2);
+  color: var(--green2);
+  cursor: default;
+  box-shadow: none;
+  font-size: 13px;
+  padding: 6px 12px;
+}
+
+/* Controls bar */
+.hg-controls {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.hg-status-badge {
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text2);
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  padding: 7px 16px;
+  border-radius: 10px;
+  flex: 1;
+  min-width: 200px;
+}
+.hg-start-btn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  border: 1px solid rgba(20,184,166,0.4);
+  background: rgba(20,184,166,0.1);
+  color: #0d9488;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s;
+  display: flex; align-items: center; gap: 8px;
+}
+.hg-start-btn:hover:not(:disabled) {
+  background: rgba(20,184,166,0.2);
+  border-color: rgba(20,184,166,0.7);
+}
+.hg-start-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.hg-reset-btn {
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel2);
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s;
+}
+.hg-reset-btn:hover { background: var(--panel3); color: var(--text); }
+
+/* Info cards */
+.handgame-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+.handgame-info-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.handgame-info-icon { font-size: 26px; margin-bottom: 10px; }
+.handgame-info-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.handgame-info-text { font-size: 12px; color: var(--text2); line-height: 1.8; font-family: 'JetBrains Mono', monospace; }
+
+/* Progress bar in cat */
+.hg-progress-chip {
+  font-size: 20px;
+  font-weight: 900;
+  font-family: 'Nunito', sans-serif;
+  text-align: center;
+  padding: 4px 0;
+}
+
+/* SOUND */
+.sound-indicator {
+  position: fixed; bottom: 20px; right: 20px; z-index: 9999;
+  display: none; align-items: center; gap: 10px;
+  background: var(--sky); border: 1px solid rgba(79,127,255,0.4);
+  border-radius: 100px; padding: 8px 18px;
+  font-size: 12px; font-family: 'JetBrains Mono', monospace;
+  color: var(--blue2); box-shadow: 0 4px 20px rgba(0,0,30,0.3);
+  animation: soundPop 0.3s ease;
+}
+@keyframes soundPop { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.sound-bars { display:flex; gap:3px; align-items:flex-end; height:16px; }
+.sound-bar { width:3px; background:var(--blue2); border-radius:2px; animation:barAnim 0.6s ease infinite; }
+.sound-bar:nth-child(1){height:6px;animation-delay:0s}
+.sound-bar:nth-child(2){height:12px;animation-delay:0.1s}
+.sound-bar:nth-child(3){height:8px;animation-delay:0.2s}
+.sound-bar:nth-child(4){height:14px;animation-delay:0.05s}
+@keyframes barAnim { 0%,100%{transform:scaleY(0.5)} 50%{transform:scaleY(1)} }
+
+/* ── TOUCH MODE ── */
+.touch-mode-bar {
+  background: var(--sky2);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap;
+}
+.tmode-btn {
+  padding: 8px 16px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.55);
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.18s; white-space: nowrap;
+  touch-action: manipulation;
+  min-height: 40px;
+}
+.tmode-btn:hover { color: rgba(255,255,255,0.9); }
+.tmode-btn.active {
+  background: rgba(79,127,255,0.25);
+  border-color: rgba(79,127,255,0.5);
+  color: #fff;
+}
+.tmode-btn.wire-active {
+  background: rgba(52,211,153,0.2);
+  border-color: rgba(52,211,153,0.5);
+  color: var(--green);
+  animation: wirePulse 1.2s ease-in-out infinite;
+}
+@keyframes wirePulse { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,0.3)} 50%{box-shadow:0 0 0 6px rgba(52,211,153,0)} }
+.tmode-label {
+  font-size: 11px; color: rgba(255,255,255,0.3);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  margin-left: auto;
+}
+.comp-item { touch-action: manipulation; min-height: 52px; }
+.elec-workspace { touch-action: none; }
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.25); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="sound-indicator" id="sound-indicator">
+  <div class="sound-bars">
+    <div class="sound-bar"></div><div class="sound-bar"></div>
+    <div class="sound-bar"></div><div class="sound-bar"></div>
+  </div>
+  <span id="sound-label">Дыбыс</span>
+</div>
+
+<!-- Hand game floating elements -->
+<div id="hg-cursor"></div>
+<div id="hg-f1" class="hg-finger-dot"></div>
+<div id="hg-f2" class="hg-finger-dot"></div>
+
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="nav-logo-icon">⚡</div>
+    <div>
+      <div class="nav-logo-text">Физика Зертхана</div>
+      <div class="nav-logo-sub">Virtual Lab · 8–9 сынып</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="showPage('home')">Басты бет</button>
+    <button class="nav-link" onclick="showPage('labs')">Зертханалар</button>
+    <button class="nav-link" onclick="showPage('tasks')">Тапсырмалар & Тест</button>
+  </div>
+  <div class="nav-badge">8–9 СЫНЫП</div>
+</nav>
+
+<!-- ══ PAGE 1 — HOME ══ -->
+<div class="page active" id="page-home">
+  <div class="home-wrap">
+    <div class="home-hero">
+      <div class="hero-chip"><div class="hero-chip-dot"></div>Виртуалды Зертхана · Физика Пәні</div>
+      <h1 class="hero-title">Физика Пәнінен<br><span>Виртуалды Зертхана</span></h1>
+      <p class="hero-sub">Интерактивті симуляторлар арқылы электр тізбегін, катер есептерін зерттеңіз. Қол қимылымен формула жинаңыз. Тест тапсырыңыз, білімді бекітіңіз.</p>
+      <div class="stats-strip">
+        <div class="stat-it"><div class="stat-n">4</div><div class="stat-l">Зертхана</div></div>
+        <div class="stat-it"><div class="stat-n">5</div><div class="stat-l">Тапсырма</div></div>
+        <div class="stat-it"><div class="stat-n">10</div><div class="stat-l">Тест сұрағы</div></div>
+        <div class="stat-it"><div class="stat-n">AI</div><div class="stat-l">Сергіту Сәті</div></div>
+        <div class="stat-it"><div class="stat-n">✋</div><div class="stat-l">Қол Қимылы</div></div>
+        <div class="stat-it"><div class="stat-n">8–9</div><div class="stat-l">Сынып</div></div>
+      </div>
+    </div>
+    <div class="home-grid">
+      <div class="home-card card-blue" onclick="showPage('labs');setLabTab('electric')">
+        <div class="card-icon-wrap blue">⚡</div>
+        <div class="card-tag blue">Зертхана №1</div>
+        <h3>Электр Тізбегі</h3>
+        <p>Элементтерді сүйреп, тізбек жасаңыз. Тізбектей, параллель, аралас жалғауды өз бетіңізше зерттеңіз.</p>
+        <div class="card-go-btn blue">Зертханаға өту →</div>
+      </div>
+      <div class="home-card card-green" onclick="showPage('labs');setLabTab('boat')">
+        <div class="card-icon-wrap green">🚤</div>
+        <div class="card-tag green">Зертхана №2</div>
+        <h3>Катер және Өзен Ағысы</h3>
+        <p>Катердің ағыспен және қарсы ағыспен жүру уақытын реттеп, физикалық заңдылықтарды зерттеңіз.</p>
+        <div class="card-go-btn green">Зертханаға өту →</div>
+      </div>
+      <div class="home-card card-pink" onclick="showPage('labs');setLabTab('sergitu')">
+        <div class="card-icon-wrap pink">🎉</div>
+        <div class="card-tag pink">Зертхана №3</div>
+        <h3>AI Сергіту Сәті</h3>
+        <p>Жасанды интеллект сыныптағы барлық оқушыларды бақылап, кездейсоқ біреуін таңдайды. Сабақты қызықты етіңіз!</p>
+        <div class="card-go-btn pink">Зертханаға өту →</div>
+      </div>
+      <div class="home-card card-teal" onclick="showPage('labs');setLabTab('handgame')">
+        <div class="card-icon-wrap teal">✋</div>
+        <div class="card-tag teal">Зертхана №4</div>
+        <h3>Қол Қимылы: Формула Жинау</h3>
+        <p>Камера арқылы қолыңызды пайдаланып, физика формулаларын дұрыс қатарға сүйреңіз. MediaPipe технологиясы!</p>
+        <div class="card-go-btn teal">Зертханаға өту →</div>
+      </div>
+      <div class="home-card card-amber" onclick="showPage('tasks')">
+        <div class="card-icon-wrap amber">📋</div>
+        <div class="card-tag amber">Тапсырмалар</div>
+        <h3>Есептер & Тест</h3>
+        <p>5 есеп шығарыңыз, жауабыңызды тексеріңіз. 10 сұрақтан тұратын тесті тапсырып, білімді бекітіңіз.</p>
+        <div class="card-go-btn amber">Тапсырмаға өту →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 2 — LABS ══ -->
+<div class="page" id="page-labs">
+  <div class="lab-tabs-bar">
+    <button class="lab-tab active" id="tab-electric" onclick="setLabTab('electric')">⚡ Электр Тізбегі</button>
+    <button class="lab-tab" id="tab-boat" onclick="setLabTab('boat')">🚤 Катер & Өзен Ағысы</button>
+    <button class="lab-tab" id="tab-sergitu" onclick="setLabTab('sergitu')">🎉 AI Сергіту Сәті</button>
+    <button class="lab-tab" id="tab-handgame" onclick="setLabTab('handgame')">✋ Қол Қимылы Ойыны</button>
+  </div>
+
+  <!-- ELECTRIC -->
+  <div class="lab-content active" id="lc-electric">
+    <div class="electric-wrap">
+      <div class="elec-topbar">
+        <div class="elec-topbar-title">⚡ ЭЛЕКТР ТІЗБЕГІ ЗЕРТХАНАСЫ</div>
+        <div class="elec-topbar-hint">Терминалдарды қосып тізбек жасаңыз</div>
+        <div class="elec-topbar-btns">
+          <button class="tbtn" onclick="showExample('series')">Тізбектей</button>
+          <button class="tbtn" onclick="showExample('parallel')">Параллель</button>
+          <button class="tbtn" onclick="showExample('mixed')">Аралас</button>
+          <button class="tbtn danger" onclick="clearAll()">🗑 Тазалау</button>
+        </div>
+      </div>
+      <div class="touch-mode-bar" id="touch-mode-bar">
+        <div class="tmode-label">РЕЖИМ:</div>
+        <button class="tmode-btn active" id="tmode-move" onclick="setTMode('move')">✋ Жылжыту</button>
+        <button class="tmode-btn" id="tmode-wire" onclick="setTMode('wire')">⚡ Сым тарту</button>
+        <button class="tmode-btn" id="tmode-delete" onclick="setTMode('delete')">🗑 Өшіру</button>
+        <div style="flex:1"></div>
+        <span style="font-size:11px;color:rgba(255,255,255,0.25);font-family:'JetBrains Mono',monospace">Элементті қосу: панельдегі батырманы басыңыз</span>
+      </div>
+      <div class="elec-body">
+        <div class="elec-sidebar">
+          <div class="sidebar-sect">
+            <div class="sidebar-label">Элементтер</div>
+            <div class="comp-item" draggable="true" ondragstart="startDrag(event,'battery')" onclick="tapAddComp('battery')" style="cursor:pointer">
+              <div class="comp-item-ico">
+                <svg width="38" height="26" viewBox="0 0 44 28"><line x1="0" y1="14" x2="14" y2="14" stroke="#7eb2ff" stroke-width="2"/><line x1="14" y1="4" x2="14" y2="24" stroke="#f87171" stroke-width="3"/><line x1="20" y1="7" x2="20" y2="21" stroke="#94a3b8" stroke-width="1.5"/><line x1="24" y1="4" x2="24" y2="24" stroke="#f87171" stroke-width="3"/><line x1="30" y1="7" x2="30" y2="21" stroke="#94a3b8" stroke-width="1.5"/><line x1="30" y1="14" x2="44" y2="14" stroke="#7eb2ff" stroke-width="2"/></svg>
+              </div>
+              <div><div class="comp-item-name">Батарея</div><div class="comp-item-sub">U = 9 В · 👆 қосу</div></div>
+            </div>
+            <div class="comp-item" draggable="true" ondragstart="startDrag(event,'bulb')" onclick="tapAddComp('bulb')" style="cursor:pointer">
+              <div class="comp-item-ico">
+                <svg width="38" height="26" viewBox="0 0 44 28"><line x1="0" y1="14" x2="10" y2="14" stroke="#7eb2ff" stroke-width="2"/><circle cx="22" cy="14" r="10" fill="none" stroke="#fbbf24" stroke-width="2"/><line x1="16" y1="8" x2="28" y2="20" stroke="#fbbf24" stroke-width="1.5"/><line x1="16" y1="20" x2="28" y2="8" stroke="#fbbf24" stroke-width="1.5"/><line x1="34" y1="14" x2="44" y2="14" stroke="#7eb2ff" stroke-width="2"/></svg>
+              </div>
+              <div><div class="comp-item-name">Шам</div><div class="comp-item-sub">R = 10 Ом · 👆 қосу</div></div>
+            </div>
+            <div class="comp-item" draggable="true" ondragstart="startDrag(event,'resistor')" onclick="tapAddComp('resistor')" style="cursor:pointer">
+              <div class="comp-item-ico">
+                <svg width="38" height="26" viewBox="0 0 44 28"><line x1="0" y1="14" x2="10" y2="14" stroke="#7eb2ff" stroke-width="2"/><rect x="10" y="8" width="24" height="12" fill="none" stroke="#a78bfa" stroke-width="2" rx="2"/><line x1="34" y1="14" x2="44" y2="14" stroke="#7eb2ff" stroke-width="2"/></svg>
+              </div>
+              <div><div class="comp-item-name">Резистор</div><div class="comp-item-sub">R = 20 Ом · 👆 қосу</div></div>
+            </div>
+            <div class="comp-item" draggable="true" ondragstart="startDrag(event,'switch')" onclick="tapAddComp('switch')" style="cursor:pointer">
+              <div class="comp-item-ico">
+                <svg width="38" height="26" viewBox="0 0 44 28"><line x1="0" y1="14" x2="12" y2="14" stroke="#7eb2ff" stroke-width="2"/><circle cx="12" cy="14" r="3" fill="#7eb2ff"/><line x1="12" y1="14" x2="30" y2="4" stroke="#7eb2ff" stroke-width="2"/><circle cx="32" cy="14" r="3" fill="#7eb2ff"/><line x1="32" y1="14" x2="44" y2="14" stroke="#7eb2ff" stroke-width="2"/></svg>
+              </div>
+              <div><div class="comp-item-name">Кілт</div><div class="comp-item-sub">Ашық/Жабық · 👆 қосу</div></div>
+            </div>
+            <div class="comp-item" draggable="true" ondragstart="startDrag(event,'ammeter')" onclick="tapAddComp('ammeter')" style="cursor:pointer">
+              <div class="comp-item-ico">
+                <svg width="38" height="26" viewBox="0 0 44 28"><line x1="0" y1="14" x2="8" y2="14" stroke="#7eb2ff" stroke-width="2"/><circle cx="22" cy="14" r="10" fill="none" stroke="#34d399" stroke-width="2"/><text x="22" y="18" fill="#34d399" font-size="9" text-anchor="middle" font-family="Orbitron" font-weight="700">A</text><line x1="36" y1="14" x2="44" y2="14" stroke="#7eb2ff" stroke-width="2"/></svg>
+              </div>
+              <div><div class="comp-item-name">Амперметр</div><div class="comp-item-sub">Ток өлшер · 👆 қосу</div></div>
+            </div>
+            <div class="comp-item" draggable="true" ondragstart="startDrag(event,'voltmeter')" onclick="tapAddComp('voltmeter')" style="cursor:pointer">
+              <div class="comp-item-ico">
+                <svg width="38" height="26" viewBox="0 0 44 28"><line x1="0" y1="14" x2="8" y2="14" stroke="#7eb2ff" stroke-width="2"/><circle cx="22" cy="14" r="10" fill="none" stroke="#7eb2ff" stroke-width="2"/><text x="22" y="18" fill="#7eb2ff" font-size="9" text-anchor="middle" font-family="Orbitron" font-weight="700">V</text><line x1="36" y1="14" x2="44" y2="14" stroke="#7eb2ff" stroke-width="2"/></svg>
+              </div>
+              <div><div class="comp-item-name">Вольтметр</div><div class="comp-item-sub">Кернеу өлшер · 👆 қосу</div></div>
+            </div>
+          </div>
+          <div class="sidebar-sect">
+            <div class="sidebar-label">Нұсқаулық</div>
+            <div class="instr">
+              1. Элементті <b>басыңыз</b> (қосылады)<br>
+              2. <b>⚡ Сым</b> режим таңда<br>
+              3. Нүктені <b>ұста → жылжыт</b><br>
+              4. <b>🗑 Өшіру</b> → элементке бас<br>
+              5. Кілтті <b>басыңыз</b> (ашу/жабу)
+            </div>
+          </div>
+        </div>
+
+        <div class="elec-workspace" id="workspace"
+          ondragover="event.preventDefault()"
+          ondrop="dropComp(event)">
+          <svg id="ws-svg">
+            <defs>
+              <marker id="arrow" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto">
+                <path d="M0,0 L6,3 L0,6 Z" fill="#4f7fff" opacity="0.7"/>
+              </marker>
+            </defs>
+            <g id="wires-layer"></g>
+            <line id="preview-wire" class="wire-preview" x1="0" y1="0" x2="0" y2="0" style="display:none"/>
+          </svg>
+          <div id="components-layer"></div>
+        </div>
+
+        <div class="elec-right">
+          <div class="meter-block">
+            <div class="meter-block-title">Өлшеуіштер</div>
+            <div class="meter-row"><div class="meter-lbl">Кернеу (U)</div><div class="meter-val mv-blue" id="mv-u">—<span class="unit">В</span></div></div>
+            <div class="meter-row"><div class="meter-lbl">Ток (I)</div><div class="meter-val mv-green" id="mv-i">—<span class="unit">А</span></div></div>
+            <div class="meter-row"><div class="meter-lbl">Кедергі (R)</div><div class="meter-val mv-amber" id="mv-r">—<span class="unit">Ом</span></div></div>
+            <div class="meter-row"><div class="meter-lbl">Қуат (P)</div><div class="meter-val mv-pink" id="mv-p">—<span class="unit">Вт</span></div></div>
+            <div class="circuit-status open" id="status-chip">
+              <div class="cs-dot"></div>
+              <span id="status-text">АШЫҚ ТІЗБЕК</span>
+            </div>
+          </div>
+          <div class="law-block">
+            <div class="law-block-title">Физика Ережесі</div>
+            <div class="law-item">Ом заңы<br><b>U = I × R</b></div>
+            <div class="law-item">Тізбектей:<br><b>Rжал = R₁ + R₂ + ...</b></div>
+            <div class="law-item">Параллель:<br><b>1/Rжал = 1/R₁ + 1/R₂</b></div>
+            <div class="law-item">Қуат:<br><b>P = U × I = I²R</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOAT -->
+  <div class="lab-content" id="lc-boat">
+    <div class="boat-wrap">
+      <div class="boat-card">
+        <div class="boat-card-title">Параметрлер</div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-name">t₁ — ағыспен уақыт</span>
+            <div class="slider-val blue"><span id="bt1-val">8</span> <span>сағ</span></div>
+          </div>
+          <input type="range" id="bt1-range" min="1" max="20" value="8" step="1" oninput="boatUpdate(true)">
+        </div>
+        <div class="slider-group">
+          <div class="slider-header">
+            <span class="slider-name">t₂ — қарсы ағыс уақыты</span>
+            <div class="slider-val red"><span id="bt2-val">12</span> <span>сағ</span></div>
+          </div>
+          <input type="range" class="red-range" id="boat-t2-range" min="1" max="30" value="12" step="1" oninput="boatUpdate(true)">
+        </div>
+        <div class="b-metrics">
+          <div class="b-metric"><div class="b-metric-label">Жауап — T₀</div><div class="b-metric-val blue" id="bm-t0">9.60</div><div class="b-metric-unit">сағат</div></div>
+          <div class="b-metric"><div class="b-metric-label">Катер жылд.</div><div class="b-metric-val amber" id="bm-v">—</div><div class="b-metric-unit">бірл./сағ</div></div>
+          <div class="b-metric"><div class="b-metric-label">Ағыс жылд.</div><div class="b-metric-val red" id="bm-u">—</div><div class="b-metric-unit">бірл./сағ</div></div>
+        </div>
+      </div>
+
+      <div class="boat-card">
+        <div class="boat-card-title">Анимация</div>
+        <div class="b-btn-row">
+          <button class="b-btn ag" id="bbtn-with" onclick="boatSetMode('with')">→ Ағыспен</button>
+          <button class="b-btn" id="bbtn-against" onclick="boatSetMode('against')">← Қарсы</button>
+          <button class="b-btn" id="bbtn-still" onclick="boatSetMode('still')">≈ Тыныш</button>
+          <button class="b-btn b-btn-play" id="bbtn-play" onclick="boatTogglePlay()">▶ Іске қос</button>
+        </div>
+        <div class="river-container" id="boat-river">
+          <div class="bank top"></div>
+          <div class="bank bottom"></div>
+          <div class="wave-layer" id="boat-wave-layer">
+            <div class="wave">〜〜〜〜〜〜〜〜〜〜〜〜</div>
+            <div class="wave">〜〜〜〜〜〜〜〜〜〜〜〜</div>
+            <div class="wave">〜〜〜〜〜〜〜〜〜〜〜〜</div>
+          </div>
+          <div class="station station-a">A</div>
+          <div class="station station-b">B</div>
+          <div class="boat-el" id="boat-el" style="left:12%">🚤</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-info">
+            <span id="bmode-txt">Режим: Ағыспен</span>
+            <span id="btime-txt">0.0 / 8 сағ</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" id="bprog" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="boat-card">
+        <div class="boat-card-title">Шешім жолы</div>
+        <div class="formula-steps">
+          <div class="step-row"><div class="step-num">1</div><div class="step-content"><span class="dim">Қашықтықты S деп алайық:</span><br>Ағыспен: <span class="hi">S = (v + u) · t₁</span></div></div>
+          <div class="step-row"><div class="step-num">2</div><div class="step-content">Қарсы: <span class="hi2">S = (v − u) · t₂</span></div></div>
+          <div class="step-row"><div class="step-num">3</div><div class="step-content"><span class="dim">Теңестіреміз:</span><br>(v + u)·t₁ = (v − u)·t₂</div></div>
+          <div class="step-row"><div class="step-num">4</div><div class="step-content"><span class="dim">Тыныш су уақыты:</span><br>T₀ = <span class="hi">2·t₁·t₂ / (t₁ + t₂)</span><br><span class="dim">(гармоникалық орта)</span></div></div>
+        </div>
+        <div class="answer-box">
+          <div class="answer-label">Есептеу нәтижесі</div>
+          <div class="answer-val" id="bans-val">9.60</div>
+          <div class="answer-formula" id="bans-formula">2 × 8 × 12 / (8 + 12) = 9.60 сағат</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI СЕРГІТУ СӘТІ -->
+  <div class="lab-content" id="lc-sergitu">
+    <div class="sergitu-wrap">
+      <div class="sergitu-header">
+        <div class="sergitu-title">🎉 AI Сергіту Сәті</div>
+        <div class="sergitu-sub">// Жасанды интеллект сыныпты бақылап, біреуін таңдайды!</div>
+      </div>
+      <div class="sergitu-api-card">
+        <div class="sergitu-api-title">Gemini API Кілті</div>
+        <div class="sergitu-api-row">
+          <input type="password" id="sergitu-api-key" class="sergitu-api-input" placeholder="AIzaSy...  API кілтіңізді енгізіңіз">
+          <button class="sergitu-api-save" onclick="saveApiKey()">Сақтау</button>
+        </div>
+        <div class="sergitu-api-hint">
+          API кілтін <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com</a> сайтынан тегін алуға болады.<br>
+          Кілт тек осы браузерде сақталады, ешқайда жіберілмейді.
+        </div>
+      </div>
+      <div class="sergitu-camera-card">
+        <div class="sergitu-video-wrap">
+          <video id="sergitu-webcam" autoplay playsinline></video>
+          <canvas id="sergitu-canvas-overlay"></canvas>
+          <div class="sergitu-scanner-line" id="sergitu-scanner"></div>
+          <div class="sergitu-status-bar" id="sergitu-status">Камера дайындалуда...</div>
+          <div class="sergitu-winner-tag" id="sergitu-winner-tag">🎉 ТАҢДАЛДЫ!</div>
+        </div>
+        <div class="sergitu-controls">
+          <button class="sergitu-btn start" id="sergitu-start-btn" onclick="sergituPickWinner()" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            Таңдауды бастау
+          </button>
+          <button class="sergitu-btn reset" onclick="sergituReset()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            Тазалау
+          </button>
+        </div>
+      </div>
+      <div class="sergitu-info-grid">
+        <div class="sergitu-info-card">
+          <div class="sergitu-info-icon">📷</div>
+          <div class="sergitu-info-title">Камера арқылы</div>
+          <div class="sergitu-info-text">AI камерадан оқушылардың бет-бейнесін тауып, олардың санын анықтайды.</div>
+        </div>
+        <div class="sergitu-info-card">
+          <div class="sergitu-info-icon">🤖</div>
+          <div class="sergitu-info-title">Gemini AI таңдайды</div>
+          <div class="sergitu-info-text">Google Gemini Flash моделі суреттен адамдарды тауып, кездейсоқ біреуін белгілейді.</div>
+        </div>
+        <div class="sergitu-info-card">
+          <div class="sergitu-info-icon">🎯</div>
+          <div class="sergitu-info-title">Сары жақтау</div>
+          <div class="sergitu-info-text">Таңдалған оқушы сары жақтаумен белгіленеді. Қалғандары көк пунктирмен.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✋ ЖАҢ: QOL QIMYLY OYYNY -->
+  <div class="lab-content" id="lc-handgame">
+    <div class="handgame-wrap">
+      <div class="handgame-header">
+        <div class="handgame-title">✋ Қол Қимылы: Формула Жинау</div>
+        <div class="handgame-sub">// Камера алдында саусақтарды қысып, формуланы дұрыс қатарға апарыңыз</div>
+      </div>
+
+      <div class="handgame-main-card">
+        <!-- Category boxes -->
+        <div class="hg-cats-row" id="hg-cats"></div>
+
+        <!-- Camera preview -->
+        <div class="hg-camera-area">
+          <video id="hg-cam"></video>
+          <canvas id="hg-canvas-main"></canvas>
+          <canvas id="hg-canvas-overlay"></canvas>
+        </div>
+
+        <!-- Formula card pool -->
+        <div class="hg-pool" id="hg-pool">
+          <span class="hg-pool-label">ФОРМУЛАЛАР</span>
+        </div>
+
+        <!-- Controls -->
+        <div class="hg-controls">
+          <div class="hg-status-badge" id="hg-status">⏳ Камера жүктелуде...</div>
+          <button class="hg-reset-btn" onclick="hgReset()">↺ Қайта бастау</button>
+          <button class="hg-start-btn" id="hg-start-btn" disabled onclick="hgStartTracking()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Бастау
+          </button>
+        </div>
+      </div>
+
+      <div class="handgame-info-grid">
+        <div class="handgame-info-card">
+          <div class="handgame-info-icon">👆</div>
+          <div class="handgame-info-title">Саусақпен курсор</div>
+          <div class="handgame-info-text">Сұқ саусақ экранда курсор рөлін атқарады. Оны формула үстіне апарыңыз.</div>
+        </div>
+        <div class="handgame-info-card">
+          <div class="handgame-info-icon">🤏</div>
+          <div class="handgame-info-title">Қысу — ұстау</div>
+          <div class="handgame-info-text">Бас бармақ пен сұқ саусақты қосыңыз. Формула ұсталады!</div>
+        </div>
+        <div class="handgame-info-card">
+          <div class="handgame-info-icon">📐</div>
+          <div class="handgame-info-title">Дұрыс қатарға апар</div>
+          <div class="handgame-info-text">Формуланы оның пәні жазылған жасыл қатарға апарыңыз — автоматты жабысады.</div>
+        </div>
+        <div class="handgame-info-card">
+          <div class="handgame-info-icon">🖱️</div>
+          <div class="handgame-info-title">Тышқанмен де жұмыс</div>
+          <div class="handgame-info-text">Камера жоқ болса, тышқанмен де формулаларды сүйреп-апаруға болады.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PAGE 3 — TASKS & TEST ══ -->
+<div class="page" id="page-tasks">
+  <div class="tasks-wrap">
+    <div class="page-title">
+      <h2>Тапсырмалар & Тест</h2>
+      <p>// Виртуалды зертхана бойынша есептер мен тест сұрақтары</p>
+    </div>
+
+    <h3 style="font-family:'Nunito',sans-serif;font-size:18px;font-weight:800;margin-bottom:20px;color:var(--text)">📋 Есептер (5 тапсырма)</h3>
+
+    <div class="task-card">
+      <div class="task-card-header"><div class="task-badge">1</div><h4>Тізбектей жалғанған шамдар</h4></div>
+      <p class="task-text">Екі шам тізбектей жалғанған. Бірінші шамның кедергісі R₁ = 15 Ом, екіншісі R₂ = 25 Ом. Батарея кернеуі U = 12 В.</p>
+      <div class="task-given">Берілген: R₁ = <span class="g-val">15 Ом</span> · R₂ = <span class="g-val">25 Ом</span> · U = <span class="g-val">12 В</span><br>Табу керек: I = ? · U₁ = ? · U₂ = ?</div>
+      <button class="task-toggle" onclick="toggleAnswer(this)">Жауабын көру ▾</button>
+      <div class="task-answer">
+        <b>Шешім:</b><br>
+        Rжалпы = R₁ + R₂ = 15 + 25 = <span class="a-key">40 Ом</span><br>
+        I = U / Rжалпы = 12 / 40 = <span class="a-key">0.3 А</span><br>
+        U₁ = I × R₁ = 0.3 × 15 = <span class="a-key">4.5 В</span><br>
+        U₂ = I × R₂ = 0.3 × 25 = <span class="a-key">7.5 В</span><br>
+        Тексеру: U₁ + U₂ = 4.5 + 7.5 = 12 В ✓
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-card-header"><div class="task-badge">2</div><h4>Параллель жалғанған шамдар</h4></div>
+      <p class="task-text">Үш бірдей шам параллель жалғанған, әрқайсысының кедергісі R = 30 Ом. Батарея кернеуі U = 9 В.</p>
+      <div class="task-given">Берілген: R₁ = R₂ = R₃ = <span class="g-val">30 Ом</span> · U = <span class="g-val">9 В</span><br>Табу керек: Rжал = ? · Iжал = ? · Iшам = ?</div>
+      <button class="task-toggle" onclick="toggleAnswer(this)">Жауабын көру ▾</button>
+      <div class="task-answer">
+        <b>Шешім:</b><br>
+        1/Rжал = 1/30 + 1/30 + 1/30 = 3/30 = 1/10<br>
+        Rжал = <span class="a-key">10 Ом</span><br>
+        Iжал = U / Rжал = 9 / 10 = <span class="a-key">0.9 А</span><br>
+        Iшам = U / R = 9 / 30 = <span class="a-key">0.3 А</span><br>
+        Тексеру: 3 × 0.3 = 0.9 А ✓
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-card-header"><div class="task-badge">3</div><h4>Аралас жалғау — қуат есебі</h4></div>
+      <p class="task-text">Бір шам (R₁ = 20 Ом) тізбектей, ал екі бірдей шам (R₂ = R₃ = 40 Ом) параллель жалғанған. U = 18 В.</p>
+      <div class="task-given">Берілген: R₁ = <span class="g-val">20 Ом</span> · R₂ = R₃ = <span class="g-val">40 Ом</span> · U = <span class="g-val">18 В</span><br>Табу керек: Rжал = ? · P = ?</div>
+      <button class="task-toggle" onclick="toggleAnswer(this)">Жауабын көру ▾</button>
+      <div class="task-answer">
+        <b>Шешім:</b><br>
+        R₂₃ (параллель) = 40/2 = <span class="a-key">20 Ом</span><br>
+        Rжал = R₁ + R₂₃ = 20 + 20 = <span class="a-key">40 Ом</span><br>
+        I = U / Rжал = 18 / 40 = <span class="a-key">0.45 А</span><br>
+        P = U × I = 18 × 0.45 = <span class="a-key">8.1 Вт</span>
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-card-header"><div class="task-badge">4</div><h4>Катер есебі — тыныш су уақыты</h4></div>
+      <p class="task-text">Катер екі пристань арасын ағыспен 6 сағатта, ал қарсы ағыспен 10 сағатта жүріп өтеді. Тыныш суда неше сағат?</p>
+      <div class="task-given">Берілген: t₁ = <span class="g-val">6 сағ</span> · t₂ = <span class="g-val">10 сағ</span><br>Табу керек: T₀ = ?</div>
+      <button class="task-toggle" onclick="toggleAnswer(this)">Жауабын көру ▾</button>
+      <div class="task-answer">
+        <b>Шешім:</b><br>
+        T₀ = 2·t₁·t₂ / (t₁ + t₂)<br>
+        T₀ = 2 × 6 × 10 / (6 + 10) = 120 / 16 = <span class="a-key">7.5 сағат</span><br>
+        Бұл — гармоникалық орта формуласы!
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-card-header"><div class="task-badge">5</div><h4>Катер жылдамдығын табу</h4></div>
+      <p class="task-text">Катер А→Б (ағыспен) 4 сағатта, Б→А (қарсы) 6 сағатта жүреді. S = 60 км. v және u = ?</p>
+      <div class="task-given">Берілген: t₁ = <span class="g-val">4 сағ</span> · t₂ = <span class="g-val">6 сағ</span> · S = <span class="g-val">60 км</span><br>Табу керек: v = ? · u = ?</div>
+      <button class="task-toggle" onclick="toggleAnswer(this)">Жауабын көру ▾</button>
+      <div class="task-answer">
+        <b>Шешім:</b><br>
+        v + u = S/t₁ = 60/4 = 15 км/сағ<br>
+        v − u = S/t₂ = 60/6 = 10 км/сағ<br>
+        2v = 25 → v = <span class="a-key">12.5 км/сағ</span><br>
+        2u = 5 → u = <span class="a-key">2.5 км/сағ</span>
+      </div>
+    </div>
+
+    <!-- TEST -->
+    <div class="test-sect">
+      <div class="test-hdr">
+        <h3>🧪 Білімді тексеру тесті</h3>
+        <div class="test-score-bdg" id="test-score-badge">0 / 10</div>
+      </div>
+      <div id="test-questions"></div>
+      <div class="result-box" id="test-result"></div>
+      <div class="test-ctrl">
+        <button class="test-btn primary" onclick="checkTest()">✓ Тексеру</button>
+        <button class="test-btn secondary" onclick="resetTest()">↺ Қайта бастау</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<canvas id="sergitu-capture-canvas" style="display:none"></canvas>
+<div class="e-tooltip" id="e-tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+
+<script>
+/* ════ AUDIO ENGINE ════ */
+let audioCtx=null;
+function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();return audioCtx;}
+function showSoundIndicator(label,duration=1200){const ind=document.getElementById('sound-indicator');const lbl=document.getElementById('sound-label');lbl.textContent=label;ind.style.display='flex';clearTimeout(ind._timer);ind._timer=setTimeout(()=>{ind.style.display='none';},duration);}
+function playSwitchClose(){try{const ctx=getAudioCtx();const buf=ctx.createBuffer(1,ctx.sampleRate*0.12,ctx.sampleRate);const data=buf.getChannelData(0);for(let i=0;i<data.length;i++){const t=i/ctx.sampleRate;data[i]=Math.exp(-t*60)*(Math.random()*2-1)*0.6+Math.exp(-t*30)*Math.sin(2*Math.PI*800*t)*0.4;}const src=ctx.createBufferSource();const gain=ctx.createGain();gain.gain.setValueAtTime(0.7,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);src.buffer=buf;src.connect(gain);gain.connect(ctx.destination);src.start();showSoundIndicator('Кілт жабылды 🔌',1000);}catch(e){}}
+function playSwitchOpen(){try{const ctx=getAudioCtx();const buf=ctx.createBuffer(1,ctx.sampleRate*0.08,ctx.sampleRate);const data=buf.getChannelData(0);for(let i=0;i<data.length;i++){const t=i/ctx.sampleRate;data[i]=Math.exp(-t*80)*(Math.random()*2-1)*0.5+Math.exp(-t*50)*Math.sin(2*Math.PI*400*t)*0.3;}const src=ctx.createBufferSource();const gain=ctx.createGain();gain.gain.setValueAtTime(0.5,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);src.buffer=buf;src.connect(gain);gain.connect(ctx.destination);src.start();showSoundIndicator('Кілт ашылды ⚡',900);}catch(e){}}
+function playCurrentFlow(){try{const ctx=getAudioCtx();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(220,ctx.currentTime);gain.gain.setValueAtTime(0,ctx.currentTime);gain.gain.linearRampToValueAtTime(0.08,ctx.currentTime+0.05);gain.gain.linearRampToValueAtTime(0,ctx.currentTime+0.4);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.4);showSoundIndicator('Ток ағады ⚡',800);}catch(e){}}
+function playWireConnect(){try{const ctx=getAudioCtx();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='square';osc.frequency.setValueAtTime(1200,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(400,ctx.currentTime+0.06);gain.gain.setValueAtTime(0.15,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.08);}catch(e){}}
+function playBoatSlider(){try{const ctx=getAudioCtx();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(440,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(880,ctx.currentTime+0.15);gain.gain.setValueAtTime(0.06,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.18);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.18);}catch(e){}}
+let sliderDebounce=null;
+function boatSliderSound(){clearTimeout(sliderDebounce);sliderDebounce=setTimeout(()=>{playBoatSlider();showSoundIndicator('Параметр өзгерді 🚤',900);},80);}
+function playBoatStart(){try{const ctx=getAudioCtx();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(150,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(300,ctx.currentTime+0.3);gain.gain.setValueAtTime(0.12,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.04,ctx.currentTime+0.3);gain.gain.linearRampToValueAtTime(0,ctx.currentTime+0.6);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.6);showSoundIndicator('Катер жүрді 🚤',1000);}catch(e){}}
+function playBoatArrive(){try{const ctx=getAudioCtx();[0,0.15,0.3].forEach((delay,i)=>{const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime([523,659,784][i],ctx.currentTime+delay);gain.gain.setValueAtTime(0.15,ctx.currentTime+delay);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+0.25);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime+delay);osc.stop(ctx.currentTime+delay+0.25);});showSoundIndicator('Жетті! 🏁',1200);}catch(e){}}
+function playSnapSound(){try{const ctx=getAudioCtx();[0,0.08].forEach((d,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.setValueAtTime([880,1046][i],ctx.currentTime+d);g.gain.setValueAtTime(0.12,ctx.currentTime+d);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+d+0.2);o.connect(g);g.connect(ctx.destination);o.start(ctx.currentTime+d);o.stop(ctx.currentTime+d+0.2);});showSoundIndicator('Дұрыс! ✅',900);}catch(e){}}
+
+/* ════ NAV ════ */
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const map={home:0,labs:1,tasks:2};
+  document.querySelectorAll('.nav-link')[map[p]].classList.add('active');
+  if(p==='labs')setTimeout(()=>{if(comps.length===0)showExample('series');},100);
+  if(p==='labs')setTimeout(()=>sergituInitCamera(),200);
+}
+function setLabTab(t){
+  document.querySelectorAll('.lab-tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.lab-content').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+  document.getElementById('lc-'+t).classList.add('active');
+  if(t==='sergitu')sergituInitCamera();
+  if(t==='handgame')hgInit();
+}
+function toggleAnswer(btn){
+  const ans=btn.nextElementSibling;
+  ans.classList.toggle('show');
+  btn.textContent=ans.classList.contains('show')?'Жасыру ▴':'Жауабын көру ▾';
+}
+
+/* ════ ELECTRIC LAB ════ */
+let comps=[],wires=[],wireIdCounter=0,compIdCounter=0,draggingComp=null,dragOffX=0,dragOffY=0,wiringFrom=null,currentFlowing=false;
+let touchMode='move';
+const COMP_DEFS={battery:{label:'Батарея',voltage:9,resistance:0.5,type:'source'},bulb:{label:'Шам',resistance:10,type:'load'},resistor:{label:'Резистор',resistance:20,type:'load'},switch:{label:'Кілт',resistance:Infinity,switchOpen:true,type:'switch'},ammeter:{label:'Амперметр',resistance:0.01,type:'meter'},voltmeter:{label:'Вольтметр',resistance:1e6,type:'meter'}};
+let ws,wssvg,wiresLayer,compsLayer,previewWire;
+function initElecRefs(){ws=document.getElementById('workspace');wssvg=document.getElementById('ws-svg');wiresLayer=document.getElementById('wires-layer');compsLayer=document.getElementById('components-layer');previewWire=document.getElementById('preview-wire');}
+let dragType=null;
+function startDrag(e,type){dragType=type;e.dataTransfer.effectAllowed='copy';}
+function dropComp(e){e.preventDefault();if(!dragType)return;if(!ws)initElecRefs();const rect=ws.getBoundingClientRect();addComp(dragType,e.clientX-rect.left,e.clientY-rect.top);dragType=null;}
+function tapAddComp(type){
+  if(!ws)initElecRefs();
+  const rect=ws.getBoundingClientRect();
+  const cx=rect.width*0.35+Math.random()*rect.width*0.3;
+  const cy=rect.height*0.3+Math.random()*rect.height*0.4;
+  const c=addComp(type,cx,cy);
+  const el=document.getElementById('el_'+c.id);
+  if(el){el.style.transition='transform 0.3s';el.style.transform='translate(-50%,-50%) scale(1.3)';setTimeout(()=>{el.style.transform='translate(-50%,-50%) scale(1)';},300);}
+}
+function setTMode(mode){
+  touchMode=mode;
+  ['move','wire','delete'].forEach(m=>{
+    const b=document.getElementById('tmode-'+m);
+    if(b){b.className='tmode-btn'+(m===mode?(mode==='wire'?' wire-active':' active'):'');}
+  });
+  if(wiringFrom){wiringFrom=null;if(previewWire)previewWire.style.display='none';}
+}
+function addComp(type,x,y){if(!ws)initElecRefs();const def=COMP_DEFS[type];if(!def)return;const id='c'+(++compIdCounter);const comp={id,type,x,y,label:def.label,voltage:def.voltage||0,resistance:def.resistance,switchOpen:def.switchOpen||false,compType:def.type};comps.push(comp);renderComp(comp);return comp;}
+function compWidth(type){return{battery:90,bulb:80,resistor:80,switch:80,ammeter:68,voltmeter:68}[type]||80;}
+function buildCompSVG(comp){
+  const w=compWidth(comp.type),h=40;
+  if(comp.type==='battery')return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="0" y1="20" x2="22" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="8" x2="22" y2="32" stroke="#f87171" stroke-width="3"/><line x1="31" y1="12" x2="31" y2="28" stroke="#94a3b8" stroke-width="1.5"/><line x1="40" y1="8" x2="40" y2="32" stroke="#f87171" stroke-width="3"/><line x1="49" y1="12" x2="49" y2="28" stroke="#94a3b8" stroke-width="1.5"/><line x1="49" y1="20" x2="${w}" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><text x="${w/2}" y="10" fill="#fbbf24" font-size="8" text-anchor="middle" font-family="JetBrains Mono">9В</text></svg>`;
+  if(comp.type==='bulb'){const s=currentFlowing?'#fbbf24':'#7eb2ff';return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="0" y1="20" x2="15" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><circle cx="35" cy="20" r="14" fill="none" stroke="${s}" stroke-width="2" id="bulb_circle_${comp.id}"/><line x1="27" y1="12" x2="43" y2="28" stroke="${s}" stroke-width="1.8" id="bulb_x1_${comp.id}"/><line x1="27" y1="28" x2="43" y2="12" stroke="${s}" stroke-width="1.8" id="bulb_x2_${comp.id}"/><line x1="49" y1="20" x2="${w}" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/></svg>`;}
+  if(comp.type==='resistor')return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="0" y1="20" x2="12" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><rect x="12" y="12" width="46" height="16" fill="rgba(167,139,250,0.15)" stroke="#a78bfa" stroke-width="2" rx="3"/><line x1="58" y1="20" x2="${w}" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+  if(comp.type==='switch'){const open=comp.switchOpen,c=open?'#f87171':'#34d399';return`<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><line x1="0" y1="20" x2="14" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><circle cx="14" cy="20" r="3.5" fill="${c}"/><line x1="14" y1="20" x2="56" y2="${open?6:20}" stroke="${c}" stroke-width="2.2"/><circle cx="56" cy="20" r="3.5" fill="${c}"/><line x1="56" y1="20" x2="${w}" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><text x="35" y="38" fill="${c}" font-size="8" text-anchor="middle" font-family="Space Grotesk">${open?'АША':'ЖАБЫҚ'}</text></svg>`;}
+  if(comp.type==='ammeter')return`<svg width="60" height="${h}" viewBox="0 0 60 ${h}"><line x1="0" y1="20" x2="10" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="20" r="13" fill="rgba(52,211,153,0.1)" stroke="#34d399" stroke-width="2"/><text x="30" y="25" fill="#34d399" font-size="12" text-anchor="middle" font-family="JetBrains Mono" font-weight="700">A</text><line x1="43" y1="20" x2="60" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+  if(comp.type==='voltmeter')return`<svg width="60" height="${h}" viewBox="0 0 60 ${h}"><line x1="0" y1="20" x2="10" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/><circle cx="30" cy="20" r="13" fill="rgba(126,178,255,0.1)" stroke="#7eb2ff" stroke-width="2"/><text x="30" y="25" fill="#7eb2ff" font-size="11" text-anchor="middle" font-family="JetBrains Mono" font-weight="700">V</text><line x1="43" y1="20" x2="60" y2="20" stroke="#7eb2ff" stroke-width="2.5" stroke-linecap="round"/></svg>`;
+  return'';
+}
+function renderComp(comp){
+  if(!compsLayer)initElecRefs();
+  const el=document.createElement('div');
+  el.id='el_'+comp.id;el.className='comp-el';
+  el.style.left=comp.x+'px';el.style.top=comp.y+'px';
+  el.innerHTML=buildCompSVG(comp)+`<div class="comp-del" onclick="deleteComp('${comp.id}')">✕</div>`;
+  const tL=makeTerm(comp.id,'L'),tR=makeTerm(comp.id,'R');
+  el.appendChild(tL);el.appendChild(tR);
+  const w=compWidth(comp.type);
+  tL.style.left='0px';tL.style.top='50%';
+  tR.style.left=w+'px';tR.style.top='50%';
+  el.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('term-dot')||e.target.classList.contains('comp-del'))return;
+    if(touchMode==='delete'){deleteComp(comp.id);return;}
+    if(touchMode==='wire')return;
+    draggingComp=comp;dragOffX=e.clientX-comp.x;dragOffY=e.clientY-comp.y;e.preventDefault();
+  });
+  el.addEventListener('touchstart',e=>{
+    if(e.target.classList.contains('term-dot')||e.target.classList.contains('comp-del'))return;
+    if(touchMode==='delete'){deleteComp(comp.id);e.preventDefault();return;}
+    if(touchMode==='wire')return;
+    const t=e.touches[0];
+    draggingComp=comp;dragOffX=t.clientX-comp.x;dragOffY=t.clientY-comp.y;
+    e.preventDefault();
+  },{passive:false});
+  if(comp.type==='switch'){
+    const doSwitch=e=>{
+      if(e.target.classList.contains('term-dot')||e.target.classList.contains('comp-del'))return;
+      if(touchMode==='delete'){deleteComp(comp.id);return;}
+      if(touchMode==='wire')return;
+      comp.switchOpen=!comp.switchOpen;comp.resistance=comp.switchOpen?Infinity:0.01;
+      if(comp.switchOpen)playSwitchOpen();else playSwitchClose();
+      const old=el.querySelector('svg');el.insertAdjacentHTML('afterbegin',buildCompSVG(comp));if(old)old.remove();simulate();
+    };
+    el.addEventListener('click',doSwitch);
+  }
+  compsLayer.appendChild(el);
+}
+function makeTerm(compId,side){
+  const dot=document.createElement('div');
+  dot.className='term-dot';
+  dot.dataset.comp=compId;dot.dataset.side=side;
+  dot.addEventListener('mousedown',termMouseDown);
+  dot.addEventListener('touchstart',termTouchStart,{passive:false});
+  return dot;
+}
+function getTermWorldPos(compId,side){const comp=comps.find(c=>c.id===compId);if(!comp)return{x:0,y:0};return{x:comp.x+(side==='L'?0:compWidth(comp.type)),y:comp.y};}
+function startWiring(compId,side){
+  if(!previewWire)initElecRefs();
+  const{x,y}=getTermWorldPos(compId,side);
+  wiringFrom={compId,side,x,y};
+  previewWire.setAttribute('x1',x);previewWire.setAttribute('y1',y);
+  previewWire.setAttribute('x2',x);previewWire.setAttribute('y2',y);
+  previewWire.style.display='block';
+}
+function finishWiring(cx,cy){
+  if(!wiringFrom)return;
+  if(previewWire)previewWire.style.display='none';
+  const allDots=document.querySelectorAll('.term-dot');
+  let best=null,bestDist=30;
+  allDots.forEach(dot=>{
+    const r=dot.getBoundingClientRect();
+    const dx=cx-(r.left+r.width/2),dy=cy-(r.top+r.height/2);
+    const d=Math.sqrt(dx*dx+dy*dy);
+    if(d<bestDist){bestDist=d;best=dot;}
+  });
+  if(best){
+    const toId=best.dataset.comp,toSide=best.dataset.side;
+    if(toId!==wiringFrom.compId){
+      const dup=wires.find(w=>(w.fromId===wiringFrom.compId&&w.fromSide===wiringFrom.side&&w.toId===toId&&w.toSide===toSide)||(w.fromId===toId&&w.fromSide===toSide&&w.toId===wiringFrom.compId&&w.toSide===wiringFrom.side));
+      if(!dup){wires.push({id:'w'+(++wireIdCounter),fromId:wiringFrom.compId,fromSide:wiringFrom.side,toId,toSide});playWireConnect();}
+    }
+  }
+  wiringFrom=null;redrawWires();simulate();
+}
+function termMouseDown(e){e.stopPropagation();e.preventDefault();startWiring(e.target.dataset.comp,e.target.dataset.side);}
+function termTouchStart(e){e.stopPropagation();e.preventDefault();startWiring(e.target.dataset.comp,e.target.dataset.side);}
+document.addEventListener('mousemove',e=>{
+  if(draggingComp){draggingComp.x=e.clientX-dragOffX;draggingComp.y=e.clientY-dragOffY;const el=document.getElementById('el_'+draggingComp.id);if(el){el.style.left=draggingComp.x+'px';el.style.top=draggingComp.y+'px';}redrawWires();return;}
+  if(wiringFrom&&previewWire){const rect=ws?ws.getBoundingClientRect():{left:0,top:0};previewWire.setAttribute('x2',e.clientX-rect.left);previewWire.setAttribute('y2',e.clientY-rect.top);}
+  const t=document.getElementById('e-tooltip');if(t){t.style.left=(e.clientX+14)+'px';t.style.top=(e.clientY-6)+'px';}
+});
+document.addEventListener('mouseup',e=>{
+  if(draggingComp){draggingComp=null;simulate();return;}
+  if(wiringFrom){finishWiring(e.clientX,e.clientY);}
+});
+document.addEventListener('touchmove',e=>{
+  if(draggingComp){
+    const t=e.touches[0];
+    draggingComp.x=t.clientX-dragOffX;draggingComp.y=t.clientY-dragOffY;
+    const el=document.getElementById('el_'+draggingComp.id);
+    if(el){el.style.left=draggingComp.x+'px';el.style.top=draggingComp.y+'px';}
+    redrawWires();e.preventDefault();return;
+  }
+  if(wiringFrom&&previewWire){
+    const t=e.touches[0];
+    const rect=ws?ws.getBoundingClientRect():{left:0,top:0};
+    previewWire.setAttribute('x2',t.clientX-rect.left);
+    previewWire.setAttribute('y2',t.clientY-rect.top);
+    e.preventDefault();
+  }
+},{passive:false});
+document.addEventListener('touchend',e=>{
+  if(draggingComp){draggingComp=null;simulate();return;}
+  if(wiringFrom){const t=e.changedTouches[0];finishWiring(t.clientX,t.clientY);}
+},{passive:false});
+function redrawWires(){
+  if(!wiresLayer)return;wiresLayer.innerHTML='';
+  wires.forEach(w=>{
+    const p1=getTermWorldPos(w.fromId,w.fromSide),p2=getTermWorldPos(w.toId,w.toSide);
+    const dx=Math.abs(p2.x-p1.x)*0.5;
+    const d=`M ${p1.x} ${p1.y} C ${p1.x+dx} ${p1.y}, ${p2.x-dx} ${p2.y}, ${p2.x} ${p2.y}`;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',d);
+    path.setAttribute('class','wire-line'+(currentFlowing?' live animated':''));
+    const hitPath=document.createElementNS('http://www.w3.org/2000/svg','path');
+    hitPath.setAttribute('d',d);hitPath.setAttribute('stroke','transparent');hitPath.setAttribute('stroke-width','22');hitPath.setAttribute('fill','none');hitPath.style.cursor='pointer';
+    const delWire=()=>{if(touchMode==="delete"){wires=wires.filter(x=>x.id!==w.id);redrawWires();simulate();}};
+    path.addEventListener('dblclick',delWire);hitPath.addEventListener('dblclick',delWire);hitPath.addEventListener('click',()=>{if(touchMode==='delete')delWire();});
+    path.addEventListener('mouseenter',()=>{path.style.stroke='#f87171';const t=document.getElementById('e-tooltip');if(t){t.textContent=touchMode==='delete'?'Басу — өшіру':'2× шерту — өшіру';t.style.display='block';}});
+    path.addEventListener('mouseleave',()=>{path.style.stroke='';const t=document.getElementById('e-tooltip');if(t)t.style.display='none';});
+    wiresLayer.appendChild(hitPath);wiresLayer.appendChild(path);
+  });
+}
+function deleteComp(id){comps=comps.filter(c=>c.id!==id);wires=wires.filter(w=>w.fromId!==id&&w.toId!==id);const el=document.getElementById('el_'+id);if(el)el.remove();redrawWires();simulate();}
+let prevFlowing=false;
+function simulate(){
+  const battery=comps.find(c=>c.compType==='source');if(!battery){resetMeters();return;}
+  const parent={};function find(x){if(parent[x]===undefined)parent[x]=x;if(parent[x]!==x)parent[x]=find(parent[x]);return parent[x];}function union(a,b){parent[find(a)]=find(b);}
+  wires.forEach(w=>{union(`${w.fromId}_${w.fromSide}`,`${w.toId}_${w.toSide}`);});
+  const batPos=find(`${battery.id}_R`),batNeg=find(`${battery.id}_L`);
+  if(batPos===batNeg){resetMeters();return;}
+  const edges=[];comps.forEach(c=>{if(c.compType==='source')return;const nL=find(`${c.id}_L`),nR=find(`${c.id}_R`);if(nL!==undefined&&nR!==undefined&&nL!==nR)edges.push({comp:c,n1:nL,n2:nR,R:c.resistance});});
+  const nodeSet=new Set([batPos,batNeg]);edges.forEach(e=>{nodeSet.add(e.n1);nodeSet.add(e.n2);});const nodeList=[...nodeSet];const freeNodes=nodeList.filter(n=>n!==batNeg);const idx={};freeNodes.forEach((n,i)=>idx[n]=i);const N=freeNodes.length;if(N===0){resetMeters(false);return;}
+  const G=Array.from({length:N},()=>new Array(N).fill(0));const Ivec=new Array(N).fill(0);
+  edges.forEach(e=>{if(e.R<=0||!isFinite(e.R))return;const g=1/e.R;const i1=idx[e.n1],i2=idx[e.n2];const n1isGnd=e.n1===batNeg,n2isGnd=e.n2===batNeg;if(!n1isGnd)G[i1][i1]+=g;if(!n2isGnd)G[i2][i2]+=g;if(!n1isGnd&&!n2isGnd){G[i1][i2]-=g;G[i2][i1]-=g;}});
+  const batPosIdx=idx[batPos];if(batPosIdx===undefined){resetMeters(false);return;}for(let j=0;j<N;j++)G[batPosIdx][j]=0;G[batPosIdx][batPosIdx]=1;Ivec[batPosIdx]=battery.voltage;
+  const V=gaussSolve(G,Ivec);if(!V){resetMeters(false);return;}
+  function nodeV(n){if(n===batNeg)return 0;const i=idx[n];return(i!==undefined&&V[i]!==undefined)?V[i]:0;}
+  const Ubat=battery.voltage;let Itotal=0;edges.forEach(e=>{if(e.R<=0||!isFinite(e.R))return;const vn1=nodeV(e.n1),vn2=nodeV(e.n2);if(e.n1===batPos)Itotal+=(vn1-vn2)/e.R;else if(e.n2===batPos)Itotal+=(vn2-vn1)/e.R;});
+  if(Math.abs(Itotal)<1e-12){resetMeters(false);return;}
+  const Rtotal=Ubat/Itotal,P=Ubat*Itotal;
+  if(!prevFlowing)playCurrentFlow();currentFlowing=true;prevFlowing=true;setMeters(Ubat,Itotal,Rtotal,P,true);
+  comps.filter(c=>c.type==='bulb').forEach(c=>{const nL=find(`${c.id}_L`),nR=find(`${c.id}_R`);const vL=nodeV(nL),vR=nodeV(nR);const vDiff=Math.abs(vR-vL);if(vDiff>0.001&&c.resistance>0){setBulbState(c,true,Math.min(1,vDiff/c.resistance*c.resistance/9));}else{setBulbState(c,false,0);}});redrawWires();
+}
+function gaussSolve(A,b){const n=b.length;const M=A.map((row,i)=>[...row,b[i]]);for(let col=0;col<n;col++){let maxRow=col;for(let r=col+1;r<n;r++)if(Math.abs(M[r][col])>Math.abs(M[maxRow][col]))maxRow=r;[M[col],M[maxRow]]=[M[maxRow],M[col]];if(Math.abs(M[col][col])<1e-12)return null;for(let r=col+1;r<n;r++){const f=M[r][col]/M[col][col];for(let c2=col;c2<=n;c2++)M[r][c2]-=f*M[col][c2];}}const x=new Array(n).fill(0);for(let i=n-1;i>=0;i--){x[i]=M[i][n];for(let j=i+1;j<n;j++)x[i]-=M[i][j]*x[j];x[i]/=M[i][i];}return x;}
+function setMeters(u,i,r,p,live){
+  document.getElementById('mv-u').innerHTML=u.toFixed(2)+'<span class="unit">В</span>';
+  document.getElementById('mv-i').innerHTML=i.toFixed(3)+'<span class="unit">А</span>';
+  document.getElementById('mv-r').innerHTML=r.toFixed(2)+'<span class="unit">Ом</span>';
+  document.getElementById('mv-p').innerHTML=p.toFixed(2)+'<span class="unit">Вт</span>';
+  const chip=document.getElementById('status-chip');
+  chip.className='circuit-status '+(live?'closed':'open');
+  document.getElementById('status-text').textContent=live?'ТҰЙЫҚ ТІЗБЕК':'АШЫҚ ТІЗБЕК';
+}
+function resetMeters(){prevFlowing=false;currentFlowing=false;comps.filter(c=>c.type==='bulb').forEach(c=>setBulbState(c,false,0));redrawWires();['mv-u','mv-i','mv-r','mv-p'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML='—';});const chip=document.getElementById('status-chip');if(chip){chip.className='circuit-status open';document.getElementById('status-text').textContent='АШЫҚ ТІЗБЕК';}}
+function setBulbState(comp,on,brightness){const circle=document.getElementById(`bulb_circle_${comp.id}`);const x1=document.getElementById(`bulb_x1_${comp.id}`);const x2=document.getElementById(`bulb_x2_${comp.id}`);if(!circle)return;if(on&&brightness>0){const alpha=Math.min(1,brightness);circle.setAttribute('fill',`rgba(255,${Math.floor(160+91*alpha)},${Math.floor(10+30*alpha)},${alpha*0.35})`);circle.setAttribute('stroke',`rgb(255,${Math.floor(140+60*alpha)},20)`);if(x1)x1.setAttribute('stroke',`rgb(255,${Math.floor(140+60*alpha)},20)`);if(x2)x2.setAttribute('stroke',`rgb(255,${Math.floor(140+60*alpha)},20)`);}else{circle.setAttribute('fill','none');circle.setAttribute('stroke','#7eb2ff');if(x1)x1.setAttribute('stroke','#7eb2ff');if(x2)x2.setAttribute('stroke','#7eb2ff');}}
+function clearAll(){comps=[];wires=[];if(compsLayer)compsLayer.innerHTML='';if(wiresLayer)wiresLayer.innerHTML='';prevFlowing=false;currentFlowing=false;resetMeters();}
+function showExample(type){
+  initElecRefs();clearAll();
+  const W=ws.offsetWidth,H=ws.offsetHeight;
+  if(type==='series'){const bat=addComp('battery',W*0.12,H*0.5);const sw=addComp('switch',W*0.28,H*0.5);const b1=addComp('bulb',W*0.44,H*0.5);const b2=addComp('bulb',W*0.60,H*0.5);const b3=addComp('bulb',W*0.76,H*0.5);const am=addComp('ammeter',W*0.5,H*0.78);wires.push({id:'w'+(++wireIdCounter),fromId:bat.id,fromSide:'R',toId:sw.id,toSide:'L'});wires.push({id:'w'+(++wireIdCounter),fromId:sw.id,fromSide:'R',toId:b1.id,toSide:'L'});wires.push({id:'w'+(++wireIdCounter),fromId:b1.id,fromSide:'R',toId:b2.id,toSide:'L'});wires.push({id:'w'+(++wireIdCounter),fromId:b2.id,fromSide:'R',toId:b3.id,toSide:'L'});wires.push({id:'w'+(++wireIdCounter),fromId:b3.id,fromSide:'R',toId:am.id,toSide:'R'});wires.push({id:'w'+(++wireIdCounter),fromId:am.id,fromSide:'L',toId:bat.id,toSide:'L'});sw.switchOpen=false;sw.resistance=0.01;const swEl=document.getElementById('el_'+sw.id);if(swEl){const old=swEl.querySelector('svg');swEl.insertAdjacentHTML('afterbegin',buildCompSVG(sw));if(old)old.remove();}}
+  else if(type==='parallel'){const bat=addComp('battery',W*0.1,H*0.5);const sw=addComp('switch',W*0.25,H*0.5);const b1=addComp('bulb',W*0.52,H*0.28);const b2=addComp('bulb',W*0.52,H*0.5);const b3=addComp('bulb',W*0.52,H*0.72);const am=addComp('ammeter',W*0.76,H*0.5);[[bat,'R',sw,'L'],[sw,'R',b1,'L'],[sw,'R',b2,'L'],[sw,'R',b3,'L'],[b1,'R',am,'L'],[b2,'R',am,'L'],[b3,'R',am,'L'],[am,'R',bat,'L']].forEach(([a,as,b,bs])=>{wires.push({id:'w'+(++wireIdCounter),fromId:a.id,fromSide:as,toId:b.id,toSide:bs});});sw.switchOpen=false;sw.resistance=0.01;const swEl=document.getElementById('el_'+sw.id);if(swEl){const old=swEl.querySelector('svg');swEl.insertAdjacentHTML('afterbegin',buildCompSVG(sw));if(old)old.remove();}}
+  else if(type==='mixed'){const bat=addComp('battery',W*0.08,H*0.5);const sw=addComp('switch',W*0.22,H*0.5);const b1=addComp('bulb',W*0.38,H*0.5);const b2=addComp('bulb',W*0.58,H*0.32);const b3=addComp('bulb',W*0.58,H*0.68);const am=addComp('ammeter',W*0.78,H*0.5);[[bat,'R',sw,'L'],[sw,'R',b1,'L'],[b1,'R',b2,'L'],[b1,'R',b3,'L'],[b2,'R',am,'L'],[b3,'R',am,'L'],[am,'R',bat,'L']].forEach(([a,as,b,bs])=>{wires.push({id:'w'+(++wireIdCounter),fromId:a.id,fromSide:as,toId:b.id,toSide:bs});});sw.switchOpen=false;sw.resistance=0.01;const swEl=document.getElementById('el_'+sw.id);if(swEl){const old=swEl.querySelector('svg');swEl.insertAdjacentHTML('afterbegin',buildCompSVG(sw));if(old)old.remove();}}
+  redrawWires();simulate();
+}
+
+/* ════ BOAT LAB ════ */
+let bMode='with',bPlaying=false,bElapsed=0,bRaf=null,bLastTs=null;
+function boatCalc(){const t1=parseInt(document.getElementById('bt1-range').value);const t2=parseInt(document.getElementById('boat-t2-range').value);const t0=2*t1*t2/(t1+t2);const v=1*(t1+t2)/(2*t1*t2);const u=1*(t2-t1)/(2*t1*t2);return{t1,t2,t0,v,u};}
+function boatUpdate(withSound){const{t1,t2,t0,v,u}=boatCalc();document.getElementById('bt1-val').textContent=t1;document.getElementById('bt2-val').textContent=t2;document.getElementById('bm-t0').textContent=t0.toFixed(2);document.getElementById('bm-v').textContent=(v*100).toFixed(1);document.getElementById('bm-u').textContent=(u*100).toFixed(1);document.getElementById('bans-val').textContent=t0.toFixed(2);document.getElementById('bans-formula').textContent=`2 × ${t1} × ${t2} / (${t1} + ${t2}) = ${2*t1*t2} / ${t1+t2} = ${t0.toFixed(2)} сағат`;if(withSound)boatSliderSound();boatResetAnim();}
+function boatGetDur(){const{t1,t2,t0}=boatCalc();return bMode==='with'?t1:bMode==='against'?t2:t0;}
+function boatSetMode(m){bMode=m;const cls={with:'ag',against:'ar',still:'ay'};['with','against','still'].forEach(x=>{const b=document.getElementById('bbtn-'+x);b.className='b-btn'+(x===m?' '+cls[x]:'');});const labels={with:'Режим: Ағыспен →',against:'Режим: ← Қарсы ағыс',still:'Режим: ≈ Тыныш су'};document.getElementById('bmode-txt').textContent=labels[m];const prog=document.getElementById('bprog');prog.className='progress-fill'+(m==='against'?' red':m==='still'?' yellow':'');document.querySelectorAll('#boat-wave-layer .wave').forEach(w=>{w.style.animationPlayState=m==='still'?'paused':'running';w.style.animationDirection=m==='against'?'reverse':'normal';});boatResetAnim();}
+function boatResetAnim(){if(bRaf){cancelAnimationFrame(bRaf);bRaf=null;}bPlaying=false;bElapsed=0;bLastTs=null;document.getElementById('bbtn-play').textContent='▶ Іске қос';boatRenderBoat(0);}
+function boatRenderBoat(frac){const f=Math.min(frac,1);const leftPct=bMode==='against'?82-f*70:12+f*70;const el=document.getElementById('boat-el');if(el){el.style.left=leftPct.toFixed(1)+'%';el.style.transform=bMode==='against'?'translateY(-50%) scaleX(-1)':'translateY(-50%)';}const dur=boatGetDur();const prog=document.getElementById('bprog');if(prog)prog.style.width=(f*100).toFixed(1)+'%';const tt=document.getElementById('btime-txt');if(tt)tt.textContent=(f*dur).toFixed(1)+' / '+dur.toFixed(1)+' сағ';}
+function boatTogglePlay(){if(bPlaying){bPlaying=false;if(bRaf){cancelAnimationFrame(bRaf);bRaf=null;}document.getElementById('bbtn-play').textContent='▶ Жалғастыру';}else{if(bElapsed>=1){bElapsed=0;bLastTs=null;}bPlaying=true;playBoatStart();document.getElementById('bbtn-play').textContent='⏸ Тоқта';bLastTs=null;bRaf=requestAnimationFrame(boatTick);}}
+function boatTick(ts){if(!bLastTs)bLastTs=ts;const dt=(ts-bLastTs)/1000;bLastTs=ts;bElapsed+=dt/(boatGetDur()*3);bElapsed=Math.min(bElapsed,1);boatRenderBoat(bElapsed);if(bElapsed<1){bRaf=requestAnimationFrame(boatTick);}else{bPlaying=false;playBoatArrive();document.getElementById('bbtn-play').textContent='↺ Қайта бастау';bElapsed=1.01;}}
+
+/* ════ AI СЕРГІТУ СӘТІ ════ */
+let sergituApiKey='',sergituStream=null,sergituAnalyzing=false,sergituCameraReady=false;
+function saveApiKey(){const inp=document.getElementById('sergitu-api-key');sergituApiKey=inp.value.trim();if(sergituApiKey){const btn=document.querySelector('.sergitu-api-save');btn.textContent='✓ Сақталды';btn.style.background='rgba(52,211,153,0.15)';btn.style.color='#34d399';btn.style.borderColor='rgba(52,211,153,0.4)';setTimeout(()=>{btn.textContent='Сақтау';btn.style.background='';btn.style.color='';btn.style.borderColor='';},2000);document.getElementById('sergitu-start-btn').disabled=!sergituCameraReady;sergituUpdateStatus('API кілті сақталды. Таңдауды бастауға болады!');}}
+async function sergituInitCamera(){if(sergituStream)return;const video=document.getElementById('sergitu-webcam');const canvas=document.getElementById('sergitu-canvas-overlay');try{const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:1280},height:{ideal:720}}});video.srcObject=stream;sergituStream=stream;video.onloadedmetadata=()=>{canvas.width=video.videoWidth;canvas.height=video.videoHeight;sergituCameraReady=true;if(sergituApiKey)document.getElementById('sergitu-start-btn').disabled=false;sergituUpdateStatus('Дайын! Оқушыларды камераға көрсетіңіз.');};}catch(err){sergituUpdateStatus('Камера табылмады немесе рұқсат берілмеді.');}}
+function sergituUpdateStatus(msg,isAlert=false){const el=document.getElementById('sergitu-status');if(!el)return;el.textContent=msg;el.style.color=isAlert?'#fbbf24':'rgba(255,255,255,0.85)';}
+async function sergituPickWinner(){if(sergituAnalyzing)return;if(!sergituApiKey){sergituUpdateStatus('Алдымен API кілтін енгізіңіз!',true);return;}if(!sergituCameraReady){sergituUpdateStatus('Камера дайын емес!',true);return;}sergituAnalyzing=true;const btn=document.getElementById('sergitu-start-btn');btn.disabled=true;btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Талдануда...';const canvas=document.getElementById('sergitu-canvas-overlay');const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);document.getElementById('sergitu-winner-tag').style.display='none';const scanner=document.getElementById('sergitu-scanner');scanner.style.display='block';sergituUpdateStatus('🤖 AI оқушыларды іздеп жатыр...');const captureCanvas=document.getElementById('sergitu-capture-canvas');const video=document.getElementById('sergitu-webcam');captureCanvas.width=video.videoWidth;captureCanvas.height=video.videoHeight;captureCanvas.getContext('2d').drawImage(video,0,0);const base64Image=captureCanvas.toDataURL('image/jpeg',0.75).split(',')[1];try{const data=await sergituFetchAI(base64Image);if(data&&data.students&&data.students.length>0){sergituDrawResults(data.students,data.winner_index,canvas,ctx);sergituUpdateStatus(`🎉 ${data.students.length} оқушы табылды. Таңдалды!`);}else{sergituUpdateStatus('Ешкім табылмады. Камера алдына отырыңыз.',true);}}catch(err){sergituUpdateStatus('Қате шықты: '+err.message,true);}finally{scanner.style.display='none';sergituAnalyzing=false;btn.disabled=false;btn.innerHTML='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg> Таңдауды бастау';}}
+async function sergituFetchAI(base64Image){const systemPrompt=`Сен сыныпты бақылаушысың. Суреттегі БАРЛЫҚ адамдарды тауып, олардың координаттарын бер.\nСонымен қатар, сол адамдардың ішінен кездейсоқ БІРЕУІН 'winner_index' деп белгіле.\nЖауапты ТЕК осы JSON форматында қайтар, басқа ештеңе жазба:\n{\n  "students": [ {"box_2d": [ymin, xmin, ymax, xmax]}, ... ],\n  "winner_index": 0\n}\nКоординаттар 0-1000 аралығында болуы керек.`;const geminiPayload={contents:[{parts:[{text:"Суреттегі барлық адамдарды тауып, кездейсоқ біреуін таңда. Тек JSON қайтар."},{inlineData:{mimeType:"image/jpeg",data:base64Image}}]}],systemInstruction:{parts:[{text:systemPrompt}]},generationConfig:{responseMimeType:"application/json",maxOutputTokens:1024}};const url=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${sergituApiKey}`;let lastErr;for(let i=0;i<3;i++){try{const resp=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(geminiPayload)});if(!resp.ok)throw new Error('HTTP '+resp.status);const result=await resp.json();const text=result.candidates?.[0]?.content?.parts?.[0]?.text;if(!text)throw new Error('Жауап бос');const clean=text.replace(/```json|```/g,'').trim();return JSON.parse(clean);}catch(err){lastErr=err;await new Promise(r=>setTimeout(r,1000*(i+1)));}}throw lastErr||new Error('AI байланысқа шықпады');}
+function sergituDrawResults(students,winnerIndex,canvas,ctx){ctx.clearRect(0,0,canvas.width,canvas.height);const winnerTag=document.getElementById('sergitu-winner-tag');winnerTag.style.display='none';students.forEach((student,index)=>{const[ymin,xmin,ymax,xmax]=student.box_2d;const x=(xmin/1000)*canvas.width;const y=(ymin/1000)*canvas.height;const w=((xmax-xmin)/1000)*canvas.width;const h=((ymax-ymin)/1000)*canvas.height;const isWinner=index===winnerIndex;if(isWinner){ctx.fillStyle='rgba(251,191,36,0.18)';ctx.fillRect(x,y,w,h);ctx.shadowColor='#fbbf24';ctx.shadowBlur=18;ctx.strokeStyle='#fbbf24';ctx.lineWidth=5;ctx.setLineDash([]);ctx.strokeRect(x,y,w,h);ctx.shadowBlur=0;const cLen=20;ctx.strokeStyle='#fff';ctx.lineWidth=3;[[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(([cx,cy],ci)=>{const sx=ci%2===0?1:-1;const sy=ci<2?1:-1;ctx.beginPath();ctx.moveTo(cx,cy+sy*cLen);ctx.lineTo(cx,cy);ctx.lineTo(cx+sx*cLen,cy);ctx.stroke();});const tagX=x+w/2;const tagY=Math.max(y-10,40);winnerTag.style.left=tagX+'px';winnerTag.style.top=tagY+'px';winnerTag.style.display='block';}else{ctx.strokeStyle='rgba(79,127,255,0.8)';ctx.lineWidth=2;ctx.setLineDash([6,5]);ctx.strokeRect(x,y,w,h);ctx.setLineDash([]);}}); }
+function sergituReset(){const canvas=document.getElementById('sergitu-canvas-overlay');const ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);document.getElementById('sergitu-winner-tag').style.display='none';sergituUpdateStatus('Дайын! Оқушыларды камераға көрсетіңіз.');}
+
+/* ════════════════════════════════════
+   ✋ HAND GAME — ҚОЛ ҚИМЫЛЫ ОЙЫНЫ
+════════════════════════════════════ */
+const HG_DATA = [
+  { id: 'kin', name: '🏃 Кинематика', formula: 'v = v₀ + at' },
+  { id: 'dyn', name: '⚡ Динамика', formula: 'F = ma' },
+  { id: 'el',  name: '🔌 Электр', formula: 'V = I·R' },
+  { id: 'th',  name: '🔥 Термо', formula: 'Q = cmΔT' },
+  { id: 'st',  name: '⚖️ Статика', formula: 'ΣF = 0' }
+];
+
+let hgInited = false;
+let hgHands = null;
+let hgCamera = null;
+let hgCamStream = null;
+let hgTracking = false;
+
+// Card drag state (mouse fallback + hand)
+let hgGrabbedCard = null;
+let hgDragOffX = 0, hgDragOffY = 0;
+let hgCursorX = 0, hgCursorY = 0;
+let hgSnapTimer = null;
+let hgGameState = 'IDLE'; // 'IDLE' | 'GRABBED'
+let hgPlacedCount = 0;
+
+// Refs
+let hgCursor, hgF1, hgF2;
+
+function hgUpdateStatus(msg) {
+  const el = document.getElementById('hg-status');
+  if (el) el.textContent = msg;
+}
+
+function hgInit() {
+  if (hgInited) return;
+  hgInited = true;
+  hgCursor = document.getElementById('hg-cursor');
+  hgF1 = document.getElementById('hg-f1');
+  hgF2 = document.getElementById('hg-f2');
+  hgBuildUI();
+  hgInitCamera();
+  hgBindMouse();
+}
+
+function hgBuildUI() {
+  // Build cat boxes
+  const catsEl = document.getElementById('hg-cats');
+  catsEl.innerHTML = '';
+  HG_DATA.forEach(d => {
+    const box = document.createElement('div');
+    box.className = 'hg-cat-box';
+    box.dataset.id = d.id;
+    box.innerHTML = `<h3>${d.name}</h3>`;
+    catsEl.appendChild(box);
+  });
+
+  // Build cards
+  const pool = document.getElementById('hg-pool');
+  // Clear old cards but keep label
+  pool.querySelectorAll('.hg-card').forEach(c => c.remove());
+
+  // Shuffle
+  const shuffled = [...HG_DATA].sort(() => Math.random() - 0.5);
+  shuffled.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'hg-card';
+    card.textContent = d.formula;
+    card.dataset.cat = d.id;
+    card.dataset.placed = 'false';
+    pool.appendChild(card);
+    hgBindCardMouse(card);
+  });
+  hgPlacedCount = 0;
+}
+
+function hgReset() {
+  hgGameState = 'IDLE';
+  hgGrabbedCard = null;
+  clearTimeout(hgSnapTimer); hgSnapTimer = null;
+  document.querySelectorAll('.hg-cat-box').forEach(b => {
+    b.classList.remove('highlight','success','shake');
+    // Remove snapped cards from boxes
+    b.querySelectorAll('.hg-card').forEach(c => c.remove());
+    b.innerHTML = `<h3>${HG_DATA.find(d=>d.id===b.dataset.id)?.name||''}</h3>`;
+  });
+  hgBuildUI();
+  hgUpdateStatus('↺ Қайта басталды. Формулаларды сүйреңіз!');
+}
+
+/* ── Mouse fallback ── */
+function hgBindMouse() {
+  document.addEventListener('mousemove', e => {
+    if (!hgGrabbedCard || hgTracking) return;
+    const card = hgGrabbedCard;
+    if (card.dataset.placed === 'true') return;
+    card.style.left = (e.clientX - hgDragOffX) + 'px';
+    card.style.top = (e.clientY - hgDragOffY) + 'px';
+    hgCheckCatHover(e.clientX, e.clientY);
+  });
+  document.addEventListener('mouseup', e => {
+    if (!hgGrabbedCard || hgTracking) return;
+    hgDropCard(e.clientX, e.clientY);
+  });
+}
+
+function hgBindCardMouse(card) {
+  card.addEventListener('mousedown', e => {
+    if (card.dataset.placed === 'true' || hgTracking) return;
+    hgGrabCard(card, e.clientX, e.clientY);
+    e.preventDefault();
+  });
+}
+
+function hgGrabCard(card, cx, cy) {
+  if (hgGrabbedCard) return;
+  const r = card.getBoundingClientRect();
+  hgDragOffX = cx - r.left;
+  hgDragOffY = cy - r.top;
+  hgGrabbedCard = card;
+  card.classList.add('grabbed');
+  card.style.position = 'fixed';
+  card.style.left = (cx - hgDragOffX) + 'px';
+  card.style.top = (cy - hgDragOffY) + 'px';
+  card.style.width = r.width + 'px';
+  document.body.appendChild(card);
+  hgGameState = 'GRABBED';
+  hgUpdateStatus('✋ Ұсталды: ' + card.textContent);
+}
+
+function hgDropCard(cx, cy) {
+  if (!hgGrabbedCard) return;
+  clearTimeout(hgSnapTimer); hgSnapTimer = null;
+  document.querySelectorAll('.hg-cat-box').forEach(b => b.classList.remove('highlight'));
+
+  const targetBox = hgFindCatAt(cx, cy);
+  if (targetBox && targetBox.dataset.id === hgGrabbedCard.dataset.cat) {
+    hgSnapCard(hgGrabbedCard, targetBox);
+  } else {
+    // Return to pool
+    hgGrabbedCard.classList.remove('grabbed', 'hover-ready');
+    hgGrabbedCard.style.position = '';
+    hgGrabbedCard.style.left = '';
+    hgGrabbedCard.style.top = '';
+    hgGrabbedCard.style.width = '';
+    document.getElementById('hg-pool').appendChild(hgGrabbedCard);
+    if (targetBox) {
+      targetBox.classList.add('shake');
+      setTimeout(() => targetBox.classList.remove('shake'), 400);
+    }
+    hgUpdateStatus('❌ Қате қатар. Тағы көріңіз!');
+    hgGrabbedCard = null;
+    hgGameState = 'IDLE';
+  }
+}
+
+function hgSnapCard(card, box) {
+  card.classList.remove('grabbed', 'hover-ready');
+  card.classList.add('snapped');
+  card.dataset.placed = 'true';
+  card.style.position = '';
+  card.style.left = '';
+  card.style.top = '';
+  card.style.width = '';
+  box.classList.add('success');
+  box.classList.remove('highlight');
+  box.appendChild(card);
+  hgGrabbedCard = null;
+  hgGameState = 'IDLE';
+  hgPlacedCount++;
+  playSnapSound();
+  hgUpdateStatus(`✅ Дұрыс! (${hgPlacedCount}/5)`);
+  if (hgPlacedCount >= 5) {
+    hgUpdateStatus('🎉 Барлық формулалар дұрыс жайғасты! Керемет!');
+    showSoundIndicator('Жеңіс! 🏆', 2000);
+  }
+}
+
+function hgFindCatAt(cx, cy) {
+  let found = null;
+  document.querySelectorAll('.hg-cat-box').forEach(b => {
+    const r = b.getBoundingClientRect();
+    if (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom) found = b;
+  });
+  return found;
+}
+
+function hgCheckCatHover(cx, cy) {
+  document.querySelectorAll('.hg-cat-box').forEach(b => b.classList.remove('highlight'));
+  const box = hgFindCatAt(cx, cy);
+  if (box) box.classList.add('highlight');
+}
+
+/* ── Camera + MediaPipe ── */
+async function hgInitCamera() {
+  const camEl = document.getElementById('hg-cam');
+  const mainCanvas = document.getElementById('hg-canvas-main');
+  const overlayCanvas = document.getElementById('hg-canvas-overlay');
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    camEl.srcObject = stream;
+    hgCamStream = stream;
+    await new Promise(r => { camEl.onloadedmetadata = r; });
+    await camEl.play();
+
+    mainCanvas.width = camEl.videoWidth;
+    mainCanvas.height = camEl.videoHeight;
+    overlayCanvas.width = camEl.videoWidth;
+    overlayCanvas.height = camEl.videoHeight;
+
+    // Draw camera loop (mirrored via CSS)
+    const drawLoop = () => {
+      const ctx = mainCanvas.getContext('2d');
+      ctx.drawImage(camEl, 0, 0);
+      requestAnimationFrame(drawLoop);
+    };
+    drawLoop();
+
+    document.getElementById('hg-start-btn').disabled = false;
+    hgUpdateStatus('✅ Камера дайын. "Бастау" басыңыз немесе тышқанмен сүйреңіз.');
+  } catch(e) {
+    hgUpdateStatus('⚠️ Камера жоқ — тышқанмен қолданыңыз. ' + e.message);
+    document.getElementById('hg-start-btn').disabled = false;
+  }
+}
+
+function hgStartTracking() {
+  if (!window.Hands || !hgCamStream) {
+    hgUpdateStatus('⚠️ MediaPipe жүктелмеді. Тышқанмен қолданыңыз.');
+    return;
+  }
+  if (hgTracking) {
+    hgTracking = false;
+    if (hgHands) { hgHands.close(); hgHands = null; }
+    if (hgCamera) { hgCamera.stop(); hgCamera = null; }
+    hgCursor.style.display = 'none';
+    hgF1.style.display = 'none';
+    hgF2.style.display = 'none';
+    document.getElementById('hg-start-btn').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg> Бастау';
+    hgUpdateStatus('⏹ Тоқтатылды. Тышқанмен қолданыңыз.');
+    return;
+  }
+  hgTracking = true;
+  document.getElementById('hg-start-btn').innerHTML = '⏹ Тоқтату';
+  hgUpdateStatus('🤚 Қол қимылын күтуде...');
+  hgCursor.style.display = 'block';
+  hgF1.style.display = 'block';
+  hgF2.style.display = 'block';
+
+  const camEl = document.getElementById('hg-cam');
+  const hands = new Hands({ locateFile: f => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}` });
+  hands.setOptions({ maxNumHands: 1, modelComplexity: 1, minDetectionConfidence: 0.7, minTrackingConfidence: 0.7 });
+  hands.onResults(hgOnHandResults);
+  hgHands = hands;
+
+  hgCamera = new Camera(camEl, {
+    onFrame: async () => { if(hgHands) await hgHands.send({ image: camEl }); },
+    width: 640, height: 480
+  });
+  hgCamera.start().catch(e => { hgUpdateStatus('Camera error: ' + e.message); });
+}
+
+function hgOnHandResults(res) {
+  if (!hgTracking) return;
+  const overlayCanvas = document.getElementById('hg-canvas-overlay');
+  const ctx = overlayCanvas.getContext('2d');
+  ctx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+
+  if (!res.multiHandLandmarks?.length) {
+    hgCursor.classList.remove('pinch');
+    hgF1.classList.remove('pinch');
+    hgF2.classList.remove('pinch');
+    if (hgGrabbedCard && hgGameState === 'GRABBED') {
+      hgDropCard(hgCursorX, hgCursorY);
+    }
+    return;
+  }
+
+  const lm = res.multiHandLandmarks[0];
+  const idx = lm[8]; // index tip
+  const thm = lm[4]; // thumb tip
+  const W = window.innerWidth, H = window.innerHeight;
+
+  // Mirror X (camera is mirrored)
+  hgCursorX = (1 - idx.x) * W;
+  hgCursorY = idx.y * H;
+  const tx = (1 - thm.x) * W;
+  const ty = thm.y * H;
+
+  const dist = Math.hypot(hgCursorX - tx, hgCursorY - ty);
+  const isPinch = dist < 55;
+
+  // Update cursor visuals
+  hgCursor.style.left = hgCursorX + 'px';
+  hgCursor.style.top = hgCursorY + 'px';
+  hgCursor.classList.toggle('pinch', isPinch);
+  hgF1.style.left = hgCursorX + 'px';
+  hgF1.style.top = hgCursorY + 'px';
+  hgF1.classList.toggle('pinch', isPinch);
+  hgF2.style.left = tx + 'px';
+  hgF2.style.top = ty + 'px';
+  hgF2.classList.toggle('pinch', isPinch);
+
+  // Draw hand skeleton on overlay
+  hgDrawSkeleton(ctx, lm, overlayCanvas.width, overlayCanvas.height, isPinch);
+
+  if (hgGameState === 'IDLE' && isPinch) {
+    // Try to grab a card
+    let best = null, bestDist = 90;
+    document.querySelectorAll('.hg-card').forEach(card => {
+      if (card.dataset.placed === 'true') return;
+      const r = card.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const d = Math.hypot(hgCursorX - cx, hgCursorY - cy);
+      if (d < bestDist) { bestDist = d; best = card; }
+    });
+    if (best) {
+      hgGrabCard(best, hgCursorX, hgCursorY);
+    }
+  } else if (hgGameState === 'GRABBED') {
+    if (hgGrabbedCard && hgGrabbedCard.dataset.placed !== 'true') {
+      hgGrabbedCard.style.left = (hgCursorX - hgDragOffX) + 'px';
+      hgGrabbedCard.style.top = (hgCursorY - hgDragOffY) + 'px';
+      hgCheckCatHover(hgCursorX, hgCursorY);
+
+      const targetBox = hgFindCatAt(hgCursorX, hgCursorY);
+      if (targetBox && targetBox.dataset.id === hgGrabbedCard.dataset.cat) {
+        if (!hgSnapTimer) {
+          hgSnapTimer = setTimeout(() => {
+            hgSnapCard(hgGrabbedCard, targetBox);
+            hgSnapTimer = null;
+          }, 350);
+        }
+      } else {
+        clearTimeout(hgSnapTimer); hgSnapTimer = null;
+        if (!isPinch) {
+          hgDropCard(hgCursorX, hgCursorY);
+        }
+      }
+    }
+    if (!isPinch) {
+      hgDropCard(hgCursorX, hgCursorY);
+    }
+  } else {
+    // Hover highlight
+    document.querySelectorAll('.hg-card').forEach(c => c.classList.remove('hover-ready'));
+    let best = null, bestDist = 70;
+    document.querySelectorAll('.hg-card').forEach(card => {
+      if (card.dataset.placed === 'true') return;
+      const r = card.getBoundingClientRect();
+      const cx = r.left + r.width/2, cy = r.top + r.height/2;
+      const d = Math.hypot(hgCursorX - cx, hgCursorY - cy);
+      if (d < bestDist) { bestDist = d; best = card; }
+    });
+    if (best) best.classList.add('hover-ready');
+  }
+}
+
+function hgDrawSkeleton(ctx, lm, W, H, isPinch) {
+  const connections = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]];
+  ctx.strokeStyle = isPinch ? 'rgba(52,211,153,0.6)' : 'rgba(79,127,255,0.45)';
+  ctx.lineWidth = 2;
+  connections.forEach(([a, b]) => {
+    const p1 = lm[a], p2 = lm[b];
+    ctx.beginPath();
+    ctx.moveTo((1-p1.x)*W, p1.y*H);
+    ctx.lineTo((1-p2.x)*W, p2.y*H);
+    ctx.stroke();
+  });
+  lm.forEach(p => {
+    ctx.beginPath();
+    ctx.arc((1-p.x)*W, p.y*H, 4, 0, Math.PI*2);
+    ctx.fillStyle = isPinch ? 'rgba(52,211,153,0.9)' : 'rgba(79,127,255,0.8)';
+    ctx.fill();
+  });
+}
+
+/* ════ TEST ════ */
+const TEST_QUESTIONS=[{q:'Ом заңы қалай жазылады?',opts:['U = I + R','U = I × R','U = I / R','U = I − R'],ans:1,exp:'Ом заңы: U = I × R, мұндағы U — кернеу (В), I — ток (А), R — кедергі (Ом).'},{q:'Тізбектей жалғауда жалпы кедергі қалай есептеледі?',opts:['Rжал = R₁ × R₂','1/Rжал = 1/R₁ + 1/R₂','Rжал = R₁ + R₂','Rжал = R₁ / R₂'],ans:2,exp:'Тізбектей жалғауда Rжал = R₁ + R₂ + ... — барлық кедергілер қосылады.'},{q:'Параллель жалғауда қандай шама бірдей болады?',opts:['Ток','Кедергі','Кернеу','Қуат'],ans:2,exp:'Параллель жалғауда барлық тармақтардағы кернеу бірдей болады (U = const).'},{q:'Тізбектей жалғауда қандай шама бірдей болады?',opts:['Кернеу','Қуат','Кедергі','Ток'],ans:3,exp:'Тізбектей жалғауда барлық элементтерден бірдей ток өтеді (I = const).'},{q:'Екі 10 Ом резистор параллель жалғанса, жалпы кедергі қанша?',opts:['20 Ом','10 Ом','5 Ом','2 Ом'],ans:2,exp:'1/Rжал = 1/10 + 1/10 = 2/10, яғни Rжал = 5 Ом.'},{q:'Электр тізбегіндегі қуат формуласы қандай?',opts:['P = U + I','P = U × R','P = U × I','P = I / U'],ans:2,exp:'Электр қуаты P = U × I (Вт). Сонымен қатар P = I²R және P = U²/R болып жазылады.'},{q:'Катер ағыспен 6 сағатта, қарсы ағыспен 12 сағатта жүрсе, тыныш суда неше сағатта жүреді?',opts:['9 сағ','8 сағ','10 сағ','7 сағ'],ans:1,exp:'T₀ = 2·t₁·t₂/(t₁+t₂) = 2·6·12/(6+12) = 144/18 = 8 сағат.'},{q:'Кілт ашық болса тізбекте не болады?',opts:['Ток артады','Ток кемиді','Ток өтпейді','Кернеу артады'],ans:2,exp:'Ашық кілт — бұл үзілген тізбек. Тізбек тұйықталмағандықтан ток өтпейді.'},{q:'Батарея кернеуі 12 В, жалпы кедергі 4 Ом болса, ток қанша?',opts:['48 А','8 А','3 А','0.3 А'],ans:2,exp:'I = U/R = 12/4 = 3 А (Ом заңы бойынша).'},{q:'Амперметр тізбекке қалай жалғанады?',opts:['Параллель','Тізбектей','Аралас','Жалғамайды'],ans:1,exp:'Амперметр тізбектей (последовательно) жалғанады, себебі ол арқылы өтетін ток өлшенеді.'}];
+let testAnswers={};
+function buildTest(){const container=document.getElementById('test-questions');container.innerHTML='';TEST_QUESTIONS.forEach((q,qi)=>{const card=document.createElement('div');card.className='q-card';card.id='qcard-'+qi;card.innerHTML=`<div class="q-num">Сұрақ ${qi+1} / ${TEST_QUESTIONS.length}</div><div class="q-text">${q.q}</div><div class="q-options">${q.opts.map((o,oi)=>`<button class="q-opt" data-qi="${qi}" data-oi="${oi}" onclick="selectOption(${qi},${oi})">${o}</button>`).join('')}</div><div class="q-exp" id="qexp-${qi}"></div>`;container.appendChild(card);});}
+function selectOption(qi,oi){if(testAnswers[qi]!==undefined)return;testAnswers[qi]=oi;document.querySelectorAll(`[data-qi="${qi}"]`).forEach(b=>b.classList.remove('selected'));document.querySelector(`[data-qi="${qi}"][data-oi="${oi}"]`).classList.add('selected');try{const ctx=getAudioCtx();const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(660,ctx.currentTime);gain.gain.setValueAtTime(0.07,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.12);osc.connect(gain);gain.connect(ctx.destination);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.12);}catch(e){}}
+function checkTest(){let score=0;TEST_QUESTIONS.forEach((q,qi)=>{const card=document.getElementById('qcard-'+qi);const exp=document.getElementById('qexp-'+qi);const ans=testAnswers[qi];const opts=document.querySelectorAll(`[data-qi="${qi}"]`);opts.forEach(b=>b.disabled=true);opts[q.ans].classList.add('correct-ans');if(ans===q.ans){score++;card.classList.add('correct');exp.innerHTML=`<span class="e-ok">✓ Дұрыс!</span> ${q.exp}`;}else{card.classList.add('wrong');if(ans!==undefined)opts[ans].classList.add('wrong-ans');exp.innerHTML=`<span style="color:var(--red);font-weight:700">✗ Қате.</span> ${q.exp}`;}exp.classList.add('show');});const badge=document.getElementById('test-score-badge');badge.textContent=`${score} / 10`;badge.className='test-score-bdg'+(score>=7?' good':'');const result=document.getElementById('test-result');result.classList.add('show');const cls=score>=8?'excellent':score>=5?'good-r':'poor';const msgs=['Тамаша! Физиканы жақсы меңгергенсің! 🎉','Жақсы нәтиже. Кейбір тақырыптарды қайталаңыз.','Тақырыпты тағы бір оқып шығыңыз. Сәттілік! 💪'];const msg=score>=8?msgs[0]:score>=5?msgs[1]:msgs[2];result.innerHTML=`<div class="result-lbl">Нәтиже</div><div class="result-score ${cls}">${score}/10</div><div class="result-lbl">${score*10}%</div><div class="result-msg">${msg}</div>`;try{const ctx=getAudioCtx();if(score>=8){[0,0.15,0.3,0.45].forEach((d,i)=>{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime([523,659,784,1047][i],ctx.currentTime+d);g.gain.setValueAtTime(0.15,ctx.currentTime+d);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+d+0.3);osc.connect(g);g.connect(ctx.destination);osc.start(ctx.currentTime+d);osc.stop(ctx.currentTime+d+0.3);});}else{const osc=ctx.createOscillator(),g=ctx.createGain();osc.type='sine';osc.frequency.setValueAtTime(330,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(220,ctx.currentTime+0.3);g.gain.setValueAtTime(0.1,ctx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.3);osc.connect(g);g.connect(ctx.destination);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.3);}}catch(e){}}
+function resetTest(){testAnswers={};document.getElementById('test-score-badge').textContent='0 / 10';document.getElementById('test-score-badge').className='test-score-bdg';document.getElementById('test-result').classList.remove('show');buildTest();}
+
+buildTest();
+boatUpdate(false);
+</script>
+</body>
+</html>
